@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:uz_app/providers/auth.dart';
+import 'package:uz_app/screens/auth/enter_otp.dart';
 import 'package:uz_app/utilities/styles.dart';
 
 import 'screens/waiting_splash.dart';
@@ -33,7 +34,12 @@ class App extends StatelessWidget {
                       authResultSnapshot.connectionState ==
                               ConnectionState.waiting
                           ? const WaitingSplashScreen()
-                          : const WelcomeScreen()),
+                          : const WelcomeScreen(),
+                ),
+          routes: {
+            MenuScreen.routeName: (ctx) => const MenuScreen(),
+            WelcomeScreen.routeName: (ctx) => const WelcomeScreen(),
+          },
         ),
       ),
     );
@@ -41,7 +47,7 @@ class App extends StatelessWidget {
 
   ThemeData _theme() {
     return ThemeData(
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: AppColors.backgroundColor,
       textTheme: GoogleFonts.openSansTextTheme(
         const TextTheme(
           headline4: AppStyles.titleSecondaryTextStyle,
@@ -50,7 +56,8 @@ class App extends StatelessWidget {
         ),
       ),
       colorScheme: ThemeData().colorScheme.copyWith(
-          primary: AppColors.mainColor, secondary: AppColors.secondaryColor),
+          primary: AppColors.secondaryColor,
+          secondary: AppColors.secondaryColor),
     );
   }
 }

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const mainColor = Color(0xFF5C5E62);
+  static const grayColor = Color.fromARGB(255, 151, 152, 155);
   static const secondaryColor = Color(0xFF2B2D7F);
   static const dangerousColor = Color(0xFFDA534A);
-  static const backgroundColor = Color(0xFFF5F5F7);
+  static const backgroundColor = Color(0xFFF7F7F9);
   static const successColor = Color(0xFF63C77F);
 }
 

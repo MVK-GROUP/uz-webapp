@@ -57,7 +57,7 @@ class AuthApi {
         if (body["status"] == "success" && body.containsKey("token")) {
           return body["token"] as String;
         }
-        throw throw HttpException(res.reasonPhrase.toString(),
+        throw HttpException(res.reasonPhrase.toString(),
             statusCode: res.statusCode);
       } else {
         throw HttpException(res.reasonPhrase.toString(),

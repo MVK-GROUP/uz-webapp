@@ -1,3 +1,19 @@
 {
-    "app_title": "Automatic Locker UZ"
+    "app_title": "Automatic Locker UZ",
+    "auth": {
+        "welcome_title": "We provide services of automatic storage chambers, delivery of goods and much more.",
+        "welcome_start": "Let's go!",
+        "phone_verification": "Verification",
+        "phone_number": "Phone number",
+        "phone_invalid_number": "Invalid phone number",
+        "phone_help_text": "We will send an SMS code to verify your phone number",
+        "phone_get_code": "Get Code",
+        "phone_not_sent": "It looks like we couldn't send SMS to this number. Please check if you entered a valid phone number",
+        "otp_enter_code": "Enter the code that was sent to the number ",
+        "otp_change_number": "(change)",
+        "otp_invalid_code": "You have entered an invalid code or the code has expired",
+        "otp_repeat": "Resend code in {time}",
+        "otp_sending_error": "Unable to resend code",
+        "otp_send_new_code": "Send New Code"
+    }
 }
