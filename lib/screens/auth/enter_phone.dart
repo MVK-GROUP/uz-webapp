@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:uz_app/screens/auth/enter_otp.dart';
@@ -46,9 +47,8 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
           child: Form(
             key: formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 30),
                 Text(
                   'auth.phone_verification'.tr(),
                   style: Theme.of(context).textTheme.headline4,
@@ -58,11 +58,12 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: Text(
                     'auth.phone_help_text'.tr(),
+                    textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 18, color: Colors.black45),
                   ),
                 ),
                 Container(
-                  constraints: const BoxConstraints(maxWidth: 500),
+                  constraints: const BoxConstraints(maxWidth: 410),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
                   child: InternationalPhoneNumberInput(
@@ -122,10 +123,6 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                         signed: true, decimal: true),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Spacer(),
                 _isSendingPhone
                     ? const MainButton(
                         isWaitingButton: true, mHorizontalInset: 30)
@@ -142,9 +139,11 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                           });
                           if (number.phoneNumber != null) {
                             try {
-                              final wasSent = await AuthApi.createOtp(
-                                  number.phoneNumber ?? "");
-
+                              var wasSent = true;
+                              if (!kDebugMode) {
+                                wasSent = await AuthApi.createOtp(
+                                    number.phoneNumber ?? "");
+                              }
                               phoneNumber = number.phoneNumber;
                               if (!mounted) return;
                               if (wasSent) {

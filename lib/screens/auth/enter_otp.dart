@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:uz_app/screens/menu.dart';
@@ -57,7 +58,7 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
 
   Widget buildOtpInputWidget() {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 500),
+      constraints: const BoxConstraints(maxWidth: 410),
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: TextField(
         autofocus: true,
@@ -81,8 +82,10 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
           ),
         ),
         textAlign: TextAlign.center,
-        autofillHints: const [AutofillHints.postalCode],
+        keyboardType: TextInputType.number,
+        autofillHints: const [AutofillHints.oneTimeCode],
         onChanged: confirmOtp,
+        autocorrect: false,
       ),
     );
   }
@@ -93,8 +96,13 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
         _isLoading = true;
       });
       try {
-        await Provider.of<Auth>(context, listen: false)
-            .confirmOtp(widget.phoneNumber, otpCode);
+        if (kDebugMode) {
+          await Provider.of<Auth>(context, listen: false)
+              .testConfirmOtp(widget.phoneNumber, otpCode);
+        } else {
+          await Provider.of<Auth>(context, listen: false)
+              .confirmOtp(widget.phoneNumber, otpCode);
+        }
         if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
             context, MenuScreen.routeName, (route) => false);
@@ -123,16 +131,14 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 50),
+                      const SizedBox(height: 30),
                       Text(
                         'auth.phone_verification'.tr(),
                         style: Theme.of(context).textTheme.headline4,
                       ),
                       const SizedBox(height: 10),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: screenWidth > 385 ? 30 : 10,
-                            vertical: 5),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(

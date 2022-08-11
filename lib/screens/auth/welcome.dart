@@ -42,35 +42,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 200,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/logos/uz_blue.png'),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 2,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: AppColors.mainColor,
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 200,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/logos/mvk.png'),
-                        ),
-                      ),
-                    ),
-                  ],
+                SizedBox(
+                  width: 300,
+                  height: 45,
+                  child: Image.asset('assets/logos/uz_mvk.png'),
                 ),
                 const SizedBox(height: 20),
                 const Spacer(),
