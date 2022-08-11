@@ -68,6 +68,7 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
         decoration: InputDecoration(
           counterText: "",
           hintText: '0000',
+          hintStyle: const TextStyle(color: AppColors.grayColor),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
@@ -79,9 +80,8 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
                 width: 3.0, color: Theme.of(context).colorScheme.secondary),
           ),
         ),
-        keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
-        autofillHints: const [AutofillHints.oneTimeCode],
+        autofillHints: const [AutofillHints.postalCode],
         onChanged: confirmOtp,
       ),
     );
