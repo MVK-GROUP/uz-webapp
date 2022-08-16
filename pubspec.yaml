@@ -12,7 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
   url_strategy: ^0.2.0
   easy_localization: ^3.0.1
   provider: ^6.0.3
@@ -20,6 +19,9 @@ dependencies:
   shared_preferences: ^2.0.15
   google_fonts: ^3.0.1
   intl_phone_number_input: ^0.7.0+2
+  mobile_scanner: ^2.0.0
+  lottie: ^1.4.1
+  flutter_markdown: ^0.6.10+3
 
 dev_dependencies:
   flutter_test:
@@ -35,3 +37,5 @@ flutter:
     - assets/images/
     - assets/logos/
     - assets/translations/
+    - assets/user_agreement/
+    - assets/lottiefiles/

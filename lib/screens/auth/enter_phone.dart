@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:uz_app/screens/auth/enter_otp.dart';
 import 'package:uz_app/utilities/styles.dart';
+
 import '../../widgets/buttons.dart';
 import '../../widgets/snackbar.dart';
 import '/api/auth.dart';
 
 class EnterPhoneScreen extends StatefulWidget {
+  static const routeName = '/enter-phone';
+
   final String? prevRouteName;
 
   const EnterPhoneScreen({this.prevRouteName, Key? key}) : super(key: key);

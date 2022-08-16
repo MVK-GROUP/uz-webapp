@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../utilities/styles.dart';
 
 enum IconLocation {
@@ -39,13 +38,13 @@ class MainButton extends StatelessWidget {
               } else if (states.contains(MaterialState.disabled)) {
                 return const Color.fromARGB(255, 189, 188, 188);
               }
-              return AppColors.secondaryColor;
+              return AppColors.mainColor;
             },
           ),
           elevation: MaterialStateProperty.all(2),
           overlayColor: MaterialStateProperty.all(Colors.black12),
           shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
           fixedSize: MaterialStateProperty.all(const Size(412, 60)),
         ),
         child: Row(
@@ -75,6 +74,7 @@ class MainButton extends StatelessWidget {
     return Icon(
       icon,
       size: 30,
+      color: Colors.white,
     );
   }
 }

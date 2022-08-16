@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:uz_app/screens/auth/enter_phone.dart';
 
 import '../../utilities/locales.dart';
 import '../../utilities/styles.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/image_banner.dart';
+import '../sceleton_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const routeName = '/welcome';
@@ -19,14 +23,15 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   late LocaleObject currentLocale;
-  bool isInit = false;
+  bool _isInit = false;
+  bool _isCheck = false;
 
   @override
   void didChangeDependencies() {
-    if (!isInit) {
+    if (!_isInit) {
       currentLocale =
           SupportedLocales.getLocaleByCode(context.locale.languageCode);
-      isInit = true;
+      _isInit = true;
     }
     super.didChangeDependencies();
   }
@@ -84,24 +89,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ),
                 const Spacer(),
                 Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: userAgreementWidget(),
+                ),
+                Container(
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                   child: MainButton(
                     text: 'auth.welcome_start'.tr(),
                     icon: Icons.arrow_right_alt,
                     iconLocation: IconLocation.right,
-                    onButtonPress: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EnterPhoneScreen(
-                                  prevRouteName: widget.prevRouteName)));
-                    },
+                    onButtonPress: _isCheck
+                        ? () async {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EnterPhoneScreen(
+                                        prevRouteName: widget.prevRouteName)));
+                          }
+                        : null,
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                )
+                const SizedBox(height: 10),
               ],
             )),
       )
@@ -115,6 +126,64 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       });
       await context.setLocale(localeObject.locale);
     }
+  }
+
+  Row userAgreementWidget() {
+    return Row(
+      children: [
+        Checkbox(
+            activeColor: AppColors.mainColor,
+            value: _isCheck,
+            onChanged: (value) {
+              setState(() {
+                _isCheck = value ?? false;
+              });
+            }),
+        const SizedBox(width: 10),
+        Flexible(
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(fontSize: 14, color: Colors.black45),
+              children: [
+                TextSpan(text: 'auth.user_agreement_part1'.tr()),
+                TextSpan(
+                  text: 'auth.user_agreement_part2'.tr(),
+                  style: const TextStyle(
+                      color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      String userAgreementText;
+                      try {
+                        userAgreementText = await rootBundle.loadString(
+                            'assets/user_agreement/${context.locale.languageCode}.md');
+                      } catch (e) {
+                        userAgreementText = await rootBundle
+                            .loadString('assets/user_agreement/en.md');
+                      }
+                      if (!mounted) return;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SkeletonScreen(
+                              title: 'auth.user_agreement_title'.tr(),
+                              body: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 15),
+                                child: Markdown(data: userAgreementText),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

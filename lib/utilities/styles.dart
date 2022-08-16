@@ -7,6 +7,7 @@ class AppColors {
   static const dangerousColor = Color(0xFFDA534A);
   static const backgroundColor = Color(0xFFF7F7F9);
   static const successColor = Color(0xFF63C77F);
+  static const textColor = Color(0xFF5C5E62);
 }
 
 class AppStyles {

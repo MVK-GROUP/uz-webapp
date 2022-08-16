@@ -8,7 +8,6 @@ import '/api/auth.dart';
 class Auth with ChangeNotifier {
   String? _token;
   String? _phone;
-  Timer? _authTimer;
 
   bool get isAuth {
     return _token != null;
@@ -44,7 +43,7 @@ class Auth with ChangeNotifier {
       if (otpCode == '1234') {
         throw HttpException('incorrect_otp', statusCode: 400);
       }
-      _token = 'testtoken';
+      _token = '93c714ab2454392be924da69ba6afad0fa868044';
       _phone = phone;
       notifyListeners();
       final prefs = await SharedPreferences.getInstance();
@@ -61,10 +60,6 @@ class Auth with ChangeNotifier {
   void logout() async {
     _token = null;
     _phone = null;
-    if (_authTimer != null) {
-      _authTimer?.cancel();
-      _authTimer = null;
-    }
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('userData');
