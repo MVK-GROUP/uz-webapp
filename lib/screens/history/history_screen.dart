@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uz_app/screens/history/order_detail.dart';
 import 'package:uz_app/widgets/button.dart';
 import '/models/order.dart';
-import '/screens/history/simple_detail_order_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/orders.dart';
@@ -53,7 +52,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -133,12 +131,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   void showOrderDetail(OrderData order) async {
     await showDialog(
-        barrierColor: Colors.transparent,
-        context: context,
-        builder: (ctx) => ChangeNotifierProvider.value(
-              value: order,
-              child: const SimpleDetailOrderDialog(),
-            ));
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (ctx) => OrderDetailDialog(order),
+    );
   }
 
   void showOrderDetailFromArgs() async {
@@ -289,6 +285,7 @@ class OrderList extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           itemCount: orders.length,

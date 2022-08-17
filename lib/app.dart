@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:uz_app/providers/auth.dart';
 import 'package:uz_app/screens/enter_lockerid_screen.dart';
+import 'package:uz_app/screens/feedback.dart';
 import 'package:uz_app/utilities/styles.dart';
 
 import 'models/lockers.dart';
@@ -60,6 +61,7 @@ class App extends StatelessWidget {
                 ),
           routes: {
             EnterLockerIdScreen.routeName: (ctx) => const EnterLockerIdScreen(),
+            FeedbackScreen.routeName: (ctx) => const FeedbackScreen(),
             MenuScreen.routeName: (ctx) => const MenuScreen(),
             WelcomeScreen.routeName: (ctx) => const WelcomeScreen(),
             SizeSelectionScreen.routeName: (ctx) => const SizeSelectionScreen(),

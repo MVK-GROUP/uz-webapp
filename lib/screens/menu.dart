@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uz_app/screens/auth/welcome.dart';
+import 'package:uz_app/screens/feedback.dart';
 
 import 'acl/choose_order_screen.dart';
 import 'acl/size_selection_screen.dart';
@@ -69,6 +70,10 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, FeedbackScreen.routeName),
+        child: Icon(Icons.question_mark),
+      ),
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
