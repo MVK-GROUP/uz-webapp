@@ -44,6 +44,17 @@ class OrdersNotifier with ChangeNotifier {
     return [...?_latestCompletedOrders];
   }
 
+  List<OrderData> get allOrders {
+    List<OrderData> orders = [];
+    if (_activeOrders != null) {
+      orders.addAll(_activeOrders!);
+    }
+    if (_latestCompletedOrders != null) {
+      orders.addAll(_latestCompletedOrders!);
+    }
+    return orders;
+  }
+
   void setLastUpdateTime(time) {
     _lastUpdate = time;
   }

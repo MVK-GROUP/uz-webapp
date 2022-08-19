@@ -34,6 +34,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Locker? locker;
   late Future _initOrdersFuture;
   bool _isInit = false;
+  bool _showFloatingButton = false;
 
   @override
   void initState() {
@@ -51,7 +52,12 @@ class _MenuScreenState extends State<MenuScreen> {
 
   Future<List<OrderData>?> _obtainInitOrdersFuture() async {
     locker = Provider.of<LockerNotifier>(context, listen: false).locker;
-    if (locker == null) return [];
+    if (locker == null) {
+      return [];
+    } else {
+      _showFloatingButton = true;
+    }
+
     final ordersNotifier = Provider.of<OrdersNotifier>(context, listen: false);
     if (ordersNotifier.isTimeToUpdate) {
       try {
@@ -70,10 +76,13 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, FeedbackScreen.routeName),
-        child: Icon(Icons.question_mark),
-      ),
+      floatingActionButton: _showFloatingButton
+          ? FloatingActionButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, FeedbackScreen.routeName),
+              child: const Icon(Icons.question_mark),
+            )
+          : null,
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,

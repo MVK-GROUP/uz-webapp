@@ -162,6 +162,26 @@
         "debt_information": "If this time is exceeded, you will need to pay the amount owed.",
         "debt_time_price": "{time} debt - +{price}"
     },
+    "feedback": {
+        "title": "Feedback",
+        "no_order": "Do not specify",
+        "how_to_contact": "How to contact you?",
+        "email": "e-mail",
+        "email_placeholder": "your email",
+        "telegram": "telegram",
+        "telegram_placeholder": "your telegram id",
+        "phone": "call on",
+        "phone_placeholder": "phone number",
+        "select_problem_order": "Select a problem order",
+        "message": "Message (optional)",
+        "message_placeholder": "Your message, for example, the cell did not open",
+        "send": "Send",
+        "email_is_not_valid": "The value \"email\" is not a valid email address.",
+        "telegram_id_is_not_valid": "The value \"telegram id\" is not a valid telegram id address.",
+        "phone_is_not_valid": "Invalid phone number format",
+        "message_sent": "Message sent, you will be contacted in a few minutes",
+        "message_not_sent": "Unfortunately, the message was not sent due to technical problems"
+    },
     "datetime": {
         "days_short": "{days} d. ",
         "hours_short": "{hours} hrs. ",

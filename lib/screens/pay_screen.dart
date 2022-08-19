@@ -137,7 +137,7 @@ class _PayScreenState extends State<PayScreen> {
                         child: Column(children: [
                           Container(
                             constraints: const BoxConstraints(maxWidth: 150),
-                            child: Image.asset("assets/logo/liqpay_logo.png"),
+                            child: Image.asset("assets/logos/liqpay_logo.png"),
                           ),
                           const SizedBox(height: 20),
                           Table(

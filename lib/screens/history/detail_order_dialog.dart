@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../feedback.dart';
 import '/providers/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -194,7 +195,12 @@ class _DetailOrderNotifierDialogState extends State<DetailOrderNotifierDialog> {
                         color: AppColors.dangerousColor),
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FeedbackScreen(order: order),
+                      ),
+                    );
                   }),
             )
           ]),

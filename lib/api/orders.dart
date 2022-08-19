@@ -283,4 +283,23 @@ class OrderApi {
       rethrow;
     }
   }
+
+  static Future<void> sendProblemReport(
+      Map<String, Object> data, String? token) async {
+    var apiUrl = "/orders/problem/";
+    try {
+      final rawResponse = await http.post(
+        Uri.parse(baseUrl + apiUrl),
+        body: json.encode(data),
+        headers: {
+          "Authorization": "Token $token",
+        },
+      );
+      if (rawResponse.statusCode >= 400) {
+        throw HttpException("unknown error");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -1,19 +1,25 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uz_app/api/orders.dart';
+import 'package:uz_app/models/order.dart';
 import 'package:uz_app/providers/auth.dart';
+import 'package:uz_app/providers/orders.dart';
+import 'package:uz_app/screens/menu.dart';
 import 'package:uz_app/screens/sceleton_screen.dart';
 import 'package:uz_app/utilities/styles.dart';
 import 'package:uz_app/widgets/button.dart';
 
 class FeedbackScreen extends StatelessWidget {
+  final OrderData? order;
   static const routeName = '/feedback';
-  const FeedbackScreen({Key? key}) : super(key: key);
+  const FeedbackScreen({this.order, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return SkeletonScreen(
-        title: "Зворотній зв'язок",
+        title: "feedback.title".tr(),
         body: Center(
           child: SingleChildScrollView(
             child: Container(
@@ -25,18 +31,29 @@ class FeedbackScreen extends StatelessWidget {
                       color: const Color.fromARGB(255, 226, 223, 217),
                     )
                   : null,
-              child: FeedbackForm(
-                orderId: 'some order',
-              ),
+              child: FeedbackForm(order: order),
             ),
           ),
         ));
   }
 }
 
+class DropdownOrderItem {
+  final int id;
+  final String title;
+  const DropdownOrderItem(this.id, this.title);
+
+  @override
+  bool operator ==(Object other) =>
+      other is DropdownOrderItem && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
 class FeedbackForm extends StatefulWidget {
-  final String? orderId;
-  const FeedbackForm({Key? key, this.orderId}) : super(key: key);
+  final OrderData? order;
+  const FeedbackForm({Key? key, this.order}) : super(key: key);
 
   @override
   State<FeedbackForm> createState() => _FeedbackFormState();
@@ -44,15 +61,8 @@ class FeedbackForm extends StatefulWidget {
 
 class _FeedbackFormState extends State<FeedbackForm> {
   String _communicateMethod = 'email';
-  String _currentOrder = 'Order 1';
+  late DropdownOrderItem _currentOrder;
 
-  final List<String> orders = [
-    'Order 1',
-    'Order 2',
-    'Order 3',
-    'Order 4',
-    'Order 5'
-  ];
   late TextEditingController _emailController;
   late TextEditingController _telegramController;
   late TextEditingController _phoneController;
@@ -63,12 +73,42 @@ class _FeedbackFormState extends State<FeedbackForm> {
   bool _phoneIsNotValid = false;
   bool _isSending = false;
 
+  List<DropdownOrderItem> get dropdownOrderItems {
+    List<DropdownOrderItem> items = [];
+    items.add(DropdownOrderItem(0, "feedback.no_order".tr()));
+    var allOrders =
+        Provider.of<OrdersNotifier>(context, listen: false).allOrders;
+    items.addAll(
+      allOrders.map(
+        (order) => DropdownOrderItem(
+          order.id,
+          getDropdownItemTitle(order),
+        ),
+      ),
+    );
+    return items;
+  }
+
+  String getDropdownItemTitle(OrderData orderData) {
+    final orderId = orderData.id.toString();
+    final created = orderData.humanDate;
+    return '${'history.order_number'.tr(namedArgs: {
+          "id": orderId
+        })} [$created]';
+  }
+
   @override
   void initState() {
     _emailController = TextEditingController();
     _telegramController = TextEditingController();
     _phoneController = TextEditingController();
     _messageController = TextEditingController();
+    _currentOrder = widget.order != null
+        ? DropdownOrderItem(
+            widget.order!.id,
+            getDropdownItemTitle(widget.order!),
+          )
+        : DropdownOrderItem(0, "feedback.no_order".tr());
     Future.delayed(Duration.zero, () {
       _phoneController.text =
           Provider.of<Auth>(context, listen: false).phone ?? '';
@@ -94,7 +134,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
           child: Align(
             alignment: Alignment.topLeft,
             child: Text(
-              "Як з вами зв'язатись?",
+              "feedback.how_to_contact".tr(),
               style: ThemeData().textTheme.headline3,
             ),
           ),
@@ -102,7 +142,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
         Opacity(
           opacity: _communicateMethod == 'email' ? 1.0 : 0.5,
           child: RadioOption(
-            text: 'e-mail',
+            text: 'feedback.email'.tr(),
             value: 'email',
             textField: TextField(
               onChanged: (value) {
@@ -115,7 +155,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
               readOnly: _communicateMethod != 'email',
               controller: _emailController,
               decoration: textFieldInputDecoration(
-                  isError: _emailIsNotValid, hintText: "Ваш email"),
+                  isError: _emailIsNotValid,
+                  hintText: 'feedback.email_placeholder'.tr()),
               autofillHints: const [AutofillHints.email],
             ),
             onChange: onChange,
@@ -125,7 +166,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
         Opacity(
           opacity: _communicateMethod == 'telegram' ? 1.0 : 0.5,
           child: RadioOption(
-            text: 'telegram',
+            text: 'feedback.telegram'.tr(),
             value: 'telegram',
             textField: TextField(
               readOnly: _communicateMethod != 'telegram',
@@ -138,7 +179,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 }
               },
               decoration: textFieldInputDecoration(
-                  isError: _telegramIsNotValid, hintText: "Ваш телеграм id"),
+                  isError: _telegramIsNotValid,
+                  hintText: 'feedback.telegram_placeholder'.tr()),
             ),
             onChange: onChange,
             groupValue: _communicateMethod,
@@ -147,7 +189,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
         Opacity(
           opacity: _communicateMethod == 'call' ? 1.0 : 0.5,
           child: RadioOption(
-            text: 'подзвонити на',
+            text: 'feedback.phone'.tr(),
             value: 'call',
             textField: TextField(
               readOnly: _communicateMethod != 'call',
@@ -160,7 +202,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 }
               },
               decoration: textFieldInputDecoration(
-                  isError: _phoneIsNotValid, hintText: "Номер телефону"),
+                  isError: _phoneIsNotValid,
+                  hintText: "feedback.phone_placeholder".tr()),
             ),
             onChange: onChange,
             groupValue: _communicateMethod,
@@ -171,20 +214,20 @@ class _FeedbackFormState extends State<FeedbackForm> {
           child: Align(
             alignment: Alignment.topLeft,
             child: Text(
-              "Оберіть проблемне замовлення",
+              "feedback.select_problem_order".tr(),
               style: ThemeData().textTheme.headline3,
             ),
           ),
         ),
         ProblemOrderSelect(
-          initText: _currentOrder,
-          values: orders,
-          onChange: (String? newValue) {
-            setState(() {
-              if (newValue != null) {
+          initItem: _currentOrder,
+          values: dropdownOrderItems,
+          onChange: (DropdownOrderItem? newValue) {
+            if (newValue != null) {
+              setState(() {
                 _currentOrder = newValue;
-              }
-            });
+              });
+            }
           },
         ),
         Padding(
@@ -192,7 +235,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
           child: Align(
             alignment: Alignment.topLeft,
             child: Text(
-              "Повідомлення (необов'язково)",
+              "feedback.message".tr(),
               style: ThemeData().textTheme.headline3,
             ),
           ),
@@ -203,7 +246,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
           decoration: textFieldInputDecoration(
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-              hintText: "Ваше повідомлення, наприклад, не відчинилась комірка"),
+              hintText: "feedback.message_placeholder".tr()),
         ),
         const SizedBox(height: 40),
         ElevatedDefaultButton(
@@ -216,9 +259,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   child: const CircularProgressIndicator(
                     color: Colors.white,
                   ))
-              : const Text(
-                  'Відправити',
-                  style: TextStyle(fontSize: 20),
+              : Text(
+                  'feedback.send'.tr(),
+                  style: const TextStyle(fontSize: 20),
                 ),
         ),
         const SizedBox(height: 40),
@@ -236,21 +279,25 @@ class _FeedbackFormState extends State<FeedbackForm> {
             .hasMatch(_emailController.text);
         if (_emailController.text.isEmpty || !emailValid) {
           setState(() => _emailIsNotValid = true);
-          isNotValidMessage = 'email not valid!';
+          isNotValidMessage = 'feedback.email_is_not_valid'.tr();
         }
         communicateMethodValue = _emailController.text;
         break;
       case 'telegram':
         if (_telegramController.text.length < 5) {
           setState(() => _telegramIsNotValid = true);
-          isNotValidMessage = 'telegram id is not valid!';
+          isNotValidMessage = 'feedback.telegram_id_is_not_valid'.tr();
         }
         communicateMethodValue = _telegramController.text;
+        if (!communicateMethodValue.startsWith('@')) {
+          print('no @');
+          communicateMethodValue = "@$communicateMethodValue";
+        }
         break;
       case 'call':
         if (_phoneController.text.length < 5) {
           setState(() => _phoneIsNotValid = true);
-          isNotValidMessage = 'phone is not valid!';
+          isNotValidMessage = 'feedback.phone_is_not_valid'.tr();
         }
         communicateMethodValue = _phoneController.text;
         break;
@@ -263,19 +310,30 @@ class _FeedbackFormState extends State<FeedbackForm> {
       return;
     }
 
-    var data = {
+    Map<String, Object> data = {
       'type': _communicateMethod,
       'value': communicateMethodValue,
-      'orderId': _currentOrder,
       'message': _messageController.text,
     };
+    if (_currentOrder.id != 0) {
+      data['order_id'] = _currentOrder.id;
+    }
     setState(() => _isSending = true);
-    await Future.delayed(Duration(seconds: 1));
+    final token = Provider.of<Auth>(context, listen: false).token;
+    try {
+      await OrderApi.sendProblemReport(data, token);
+      showSnackbarMessage("feedback.message_sent".tr());
+    } catch (e) {
+      showSnackbarMessage("feedback.message_not_sent".tr());
+    }
+
     setState(() => _isSending = false);
-    showSnackbarMessage(
-        "Повідомлення відправлено, з вами зв'яжуться через декілька хвилин");
+
     if (mounted) {
-      Navigator.pop(context);
+      widget.order != null
+          ? Navigator.pushNamedAndRemoveUntil(
+              context, MenuScreen.routeName, (route) => false)
+          : Navigator.pop(context);
     }
   }
 
@@ -382,11 +440,11 @@ class RadioOption extends StatelessWidget {
 }
 
 class ProblemOrderSelect extends StatelessWidget {
-  final String initText;
-  final List<String> values;
-  final Function(String?) onChange;
+  final DropdownOrderItem initItem;
+  final List<DropdownOrderItem> values;
+  final Function(DropdownOrderItem?) onChange;
   const ProblemOrderSelect({
-    required this.initText,
+    required this.initItem,
     required this.values,
     required this.onChange,
     Key? key,
@@ -394,7 +452,7 @@ class ProblemOrderSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
+    return DropdownButtonFormField<DropdownOrderItem>(
       focusColor: Colors.transparent,
       decoration: InputDecoration(
           contentPadding:
@@ -412,15 +470,16 @@ class ProblemOrderSelect extends StatelessWidget {
             borderSide: const BorderSide(width: 0.0, color: Colors.transparent),
           ),
           hoverColor: Colors.white),
-      value: initText,
+      value: initItem,
       icon: const Icon(Icons.keyboard_arrow_down_rounded),
       elevation: 16,
       isExpanded: true,
-      onChanged: (String? newValue) => onChange(newValue),
-      items: values.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
+      onChanged: (DropdownOrderItem? newValue) => onChange(newValue),
+      items: values
+          .map<DropdownMenuItem<DropdownOrderItem>>((DropdownOrderItem value) {
+        return DropdownMenuItem<DropdownOrderItem>(
           value: value,
-          child: Text(value),
+          child: Text(value.title),
         );
       }).toList(),
     );

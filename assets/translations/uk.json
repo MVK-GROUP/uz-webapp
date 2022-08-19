@@ -162,6 +162,26 @@
         "debt_information": "У разі перевищення цього часу Вам потрібно буде заплатити суму заборгованості. ",
         "debt_time_price": "{time} заборгованості - +{price}"
     },
+    "feedback": {
+        "title": "Зворотній зв'язок",
+        "no_order": "Не вказувати",
+        "how_to_contact": "Як з вами зв'язатись?",
+        "email": "e-mail",
+        "email_placeholder": "ваш email",
+        "telegram": "телеграм",
+        "telegram_placeholder": "ваш telegram id",
+        "phone": "подзвонити на",
+        "phone_placeholder": "номер телефону",
+        "select_problem_order": "Оберіть проблемне замовлення",
+        "message": "Повідомлення (необов'язково)",
+        "message_placeholder": "Ваше повідомлення, наприклад, не відчинилась комірка",
+        "send": "Відправити",
+        "email_is_not_valid": "Значення \"email\" не є правильною email адресою.",
+        "telegram_id_is_not_valid": "Значення \"telegram id\" не є правильною telegram id адресою.",
+        "phone_is_not_valid": "Неправильний формат номера телефону",
+        "message_sent": "Повідомлення відправлено, з вами зв'яжуться через декілька хвилин",
+        "message_not_sent": "Нажаль повідомлення не відправилось через технічні проблеми"
+    },
     "datetime": {
         "days_short": "{days} д. ",
         "hours_short": "{hours} год. ",

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:uz_app/screens/feedback.dart';
 import '/screens/menu.dart';
 
 import '../../models/order.dart';
@@ -165,7 +166,12 @@ class _OrderDetailContent extends StatelessWidget {
                       color: AppColors.dangerousColor),
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FeedbackScreen(order: order),
+                    ),
+                  );
                 }),
           ),
       ],
