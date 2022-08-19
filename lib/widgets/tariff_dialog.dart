@@ -16,8 +16,10 @@ class TariffDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
+          constraints: const BoxConstraints(
+              maxWidth: 400, minHeight: 300, maxHeight: 500),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Align(
                 alignment: Alignment.topRight,

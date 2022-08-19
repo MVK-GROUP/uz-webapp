@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:uz_app/screens/auth/welcome.dart';
 import 'package:uz_app/screens/feedback.dart';
 
-import 'acl/choose_order_screen.dart';
+import 'choose_order_screen.dart';
 import 'acl/size_selection_screen.dart';
 import 'auth/enter_phone.dart';
-import 'history/detail_order_dialog.dart';
+import 'history/order_detail_notifier_dialog.dart';
 import 'history/history_screen.dart';
 import 'enter_lockerid_screen.dart';
 import '../api/http_exceptions.dart';
@@ -244,12 +244,13 @@ class _MenuScreenState extends State<MenuScreen> {
 
   void showOrderDetail(BuildContext context, OrderData order) async {
     await showDialog(
-        barrierColor: Colors.transparent,
-        context: context,
-        builder: (ctx) => ChangeNotifierProvider.value(
-              value: order,
-              child: const DetailOrderNotifierDialog(),
-            ));
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (ctx) => ChangeNotifierProvider.value(
+        value: order,
+        child: const OrderDetailNotifierDialog(),
+      ),
+    );
   }
 
   List<Widget> iconTiles(BuildContext context) {

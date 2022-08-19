@@ -12,15 +12,15 @@ import '../../widgets/dialog.dart';
 import '../../widgets/order_element_widget.dart';
 import 'order_actions_widget.dart';
 
-class DetailOrderNotifierDialog extends StatefulWidget {
-  const DetailOrderNotifierDialog({Key? key}) : super(key: key);
+class OrderDetailNotifierDialog extends StatefulWidget {
+  const OrderDetailNotifierDialog({Key? key}) : super(key: key);
 
   @override
-  State<DetailOrderNotifierDialog> createState() =>
-      _DetailOrderNotifierDialogState();
+  State<OrderDetailNotifierDialog> createState() =>
+      _OrderDetailNotifierDialogState();
 }
 
-class _DetailOrderNotifierDialogState extends State<DetailOrderNotifierDialog> {
+class _OrderDetailNotifierDialogState extends State<OrderDetailNotifierDialog> {
   late OrderData order;
   var _isInit = false;
   Timer? timer;
@@ -135,57 +135,59 @@ class _DetailOrderNotifierDialogState extends State<DetailOrderNotifierDialog> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: OrderElementWidget(
-                iconData: Icons.location_on,
-                text: order.place ?? "unknown".tr(),
-                iconSize: 26,
-                textStyle: AppStyles.bodyText2,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: OrderElementWidget(
+                  iconData: Icons.location_on,
+                  text: order.place ?? "unknown".tr(),
+                  iconSize: 26,
+                  textStyle: AppStyles.bodyText2,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: OrderElementWidget(
-                iconData: Icons.shopping_bag_outlined,
-                text: order.title,
-                iconSize: 26,
-                textStyle: AppStyles.bodyText2,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: OrderElementWidget(
+                  iconData: Icons.shopping_bag_outlined,
+                  text: order.title,
+                  iconSize: 26,
+                  textStyle: AppStyles.bodyText2,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: OrderElementWidget(
-                iconData: Icons.calendar_month,
-                text: order.humanDate,
-                iconSize: 26,
-                textStyle: AppStyles.bodyText2,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: OrderElementWidget(
+                  iconData: Icons.calendar_month,
+                  text: order.humanDate,
+                  iconSize: 26,
+                  textStyle: AppStyles.bodyText2,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: OrderElementWidget(
-                iconData: Icons.attach_money,
-                text: order.humanPrice,
-                iconSize: 26,
-                textStyle: AppStyles.bodyText2,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: OrderElementWidget(
+                  iconData: Icons.attach_money,
+                  text: order.humanPrice,
+                  iconSize: 26,
+                  textStyle: AppStyles.bodyText2,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: OrderElementWidget(
-                iconData: Icons.playlist_add_check_circle_outlined,
-                text: orderStatusText,
-                iconSize: 26,
-                textStyle:
-                    AppStyles.bodyText2.copyWith(color: orderStatusColor),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: OrderElementWidget(
+                  iconData: Icons.playlist_add_check_circle_outlined,
+                  text: orderStatusText,
+                  iconSize: 26,
+                  textStyle:
+                      AppStyles.bodyText2.copyWith(color: orderStatusColor),
+                ),
               ),
-            ),
-            const OrderActionsWidget(),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextButton(
+              const OrderActionsWidget(),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextButton(
                   child: Text(
                     "report_problem".tr(),
                     textAlign: TextAlign.center,
@@ -201,9 +203,11 @@ class _DetailOrderNotifierDialogState extends State<DetailOrderNotifierDialog> {
                         builder: (context) => FeedbackScreen(order: order),
                       ),
                     );
-                  }),
-            )
-          ]),
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uz_app/screens/history/order_detail.dart';
 import 'package:uz_app/widgets/button.dart';
+import '../../widgets/list/order_list.dart';
 import '/models/order.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/orders.dart';
 import '../menu.dart';
 import '../../utilities/styles.dart';
-import '../../widgets/order_tile.dart';
+import '../../widgets/cards/order_tile.dart';
 
 class HistoryScreen extends StatefulWidget {
   static const routeName = 'history/';
@@ -269,40 +270,6 @@ class NoOrdersWidget extends StatelessWidget {
               style: const TextStyle(fontSize: 16),
             )),
       ],
-    );
-  }
-}
-
-class OrderList extends StatelessWidget {
-  final List<OrderData> orders;
-  final Function(OrderData)? onPressed;
-  final double maxWidth;
-  const OrderList(this.orders, {this.onPressed, this.maxWidth = 400, Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: maxWidth),
-      child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: orders.length,
-          itemBuilder: (ctx, i) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: OrderTile(
-                title: "history.order_number"
-                    .tr(namedArgs: {"id": orders[i].id.toString()}),
-                place: orders[i].place ?? "unknown".tr(),
-                containerColor: Colors.white,
-                date: orders[i].humanDate,
-                onPressed:
-                    onPressed == null ? null : () => onPressed!(orders[i]),
-              ),
-            );
-          }),
     );
   }
 }
