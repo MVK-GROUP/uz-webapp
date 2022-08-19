@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import '/api/http_exceptions.dart';
 import '/models/lockers.dart';
 import '/providers/orders.dart';
@@ -8,9 +11,6 @@ import '/screens/menu.dart';
 import '/screens/qr_scanner_screen.dart';
 import '/utilities/styles.dart';
 import '/widgets/dialog.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-
 import '../api/lockers.dart';
 
 class EnterLockerIdScreen extends StatefulWidget {
@@ -57,123 +57,128 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
             : Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Spacer(),
-                      Text(
-                        'set_locker.scan_qr'.tr(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          if (kIsWeb) {
-                            final res = await Navigator.of(context)
-                                .pushNamed(QrScannerScreen.routeName);
-                            if (res != null) {
-                              if (res is String) {
-                                lockerId = res;
-                                enteredLockerId();
-                              }
-                            }
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text("information".tr()),
-                                content:
-                                    Text("functionality_is_not_available".tr()),
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white,
-                            boxShadow: [AppShadows.getShadow200()],
-                          ),
-                          padding: const EdgeInsets.all(20),
-                          child: Column(children: [
-                            SizedBox(
-                              height: 92,
-                              width: 92,
-                              child: Image.asset(
-                                "assets/images/scan_qr.png",
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              "set_locker.scan_qr_action".tr(),
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  color: AppColors.textColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ]),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              thickness: 2,
-                              indent: 25,
-                              endIndent: 25,
-                              color: AppColors.textColor.withOpacity(0.5),
-                            ),
-                          ),
-                          Text(
-                            "set_locker.or".tr(),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              thickness: 2,
-                              indent: 25,
-                              endIndent: 25,
-                              color: AppColors.textColor.withOpacity(0.5),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      const Spacer(),
-                      Text(
-                        'set_locker.enter_locker_id'.tr(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        constraints: const BoxConstraints(maxWidth: 350),
-                        child: Form(
-                          key: formKey,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 30),
-                            child: buildLockerIdInputWidget(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      const Spacer(),
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      _buildTitle('set_locker.scan_qr'.tr()),
+                      const SizedBox(height: 16),
+                      _buildQr(),
+                      _buildDivider(),
+                      _buildTitle('set_locker.enter_locker_id'.tr()),
+                      const SizedBox(height: 6),
+                      _buildLockerIdInputWidget(),
                     ]),
+                  ),
+                ),
               ),
       ),
     );
   }
 
-  Widget buildLockerIdInputWidget() {
+  Widget _buildTitle(String title) {
+    return Text(
+      title,
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.headline4,
+    );
+  }
+
+  Widget _buildQr() {
+    return GestureDetector(
+      onTap: () async {
+        if (kIsWeb) {
+          final res =
+              await Navigator.of(context).pushNamed(QrScannerScreen.routeName);
+          if (res != null) {
+            if (res is String) {
+              lockerId = res;
+              enteredLockerId();
+            }
+          }
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("information".tr()),
+              content: Text("functionality_is_not_available".tr()),
+            ),
+          );
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          boxShadow: [AppShadows.getShadow200()],
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(children: [
+          SizedBox(
+            height: 92,
+            width: 92,
+            child: Image.asset(
+              "assets/images/scan_qr.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "set_locker.scan_qr_action".tr(),
+            style: const TextStyle(
+                fontSize: 16,
+                color: AppColors.textColor,
+                fontWeight: FontWeight.w600),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Divider(
+              thickness: 2,
+              indent: 25,
+              endIndent: 25,
+              color: AppColors.textColor.withOpacity(0.5),
+            ),
+          ),
+          Text(
+            "set_locker.or".tr(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20),
+          ),
+          Expanded(
+            child: Divider(
+              thickness: 2,
+              indent: 25,
+              endIndent: 25,
+              color: AppColors.textColor.withOpacity(0.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLockerIdInputWidget() {
+    //Container(
+    //                    constraints: const BoxConstraints(maxWidth: 350),
+    //                    child: Form(
+    //                      key: formKey,
+    //                      child: Padding(
+    //                        padding: const EdgeInsets.symmetric(
+    //                            vertical: 0, horizontal: 30),
+    //                        child: buildLockerIdInputWidget(),
+    //                      ),
+    //                    ),
+    //                  ),
+
     return Container(
       constraints: const BoxConstraints(maxWidth: 410),
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
