@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:uz_app/screens/auth/enter_otp.dart';
 import 'package:uz_app/utilities/styles.dart';
 
+import '../../api/settings.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/snackbar.dart';
 import '/api/auth.dart';
@@ -143,7 +143,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                           if (number.phoneNumber != null) {
                             try {
                               var wasSent = true;
-                              if (!kDebugMode) {
+                              if (!debugServer) {
                                 wasSent = await AuthApi.createOtp(
                                     number.phoneNumber ?? "");
                               }

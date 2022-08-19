@@ -30,6 +30,8 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bottom = MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.backgroundColor,
@@ -59,15 +61,19 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                 child: Center(
                   child: SingleChildScrollView(
-                    child: Column(children: [
-                      _buildTitle('set_locker.scan_qr'.tr()),
-                      const SizedBox(height: 16),
-                      _buildQr(),
-                      _buildDivider(),
-                      _buildTitle('set_locker.enter_locker_id'.tr()),
-                      const SizedBox(height: 6),
-                      _buildLockerIdInputWidget(),
-                    ]),
+                    reverse: true,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: bottom),
+                      child: Column(children: [
+                        _buildTitle('set_locker.scan_qr'.tr()),
+                        const SizedBox(height: 16),
+                        _buildQr(),
+                        _buildDivider(),
+                        _buildTitle('set_locker.enter_locker_id'.tr()),
+                        const SizedBox(height: 6),
+                        _buildLockerIdInputWidget(),
+                      ]),
+                    ),
                   ),
                 ),
               ),

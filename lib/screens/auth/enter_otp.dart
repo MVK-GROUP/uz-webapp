@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:uz_app/screens/menu.dart';
 import 'package:uz_app/widgets/snackbar.dart';
+import '../../api/settings.dart';
 import '../../utilities/styles.dart';
 import '/providers/auth.dart';
 import 'package:provider/provider.dart';
@@ -96,7 +96,7 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
         _isLoading = true;
       });
       try {
-        if (kDebugMode) {
+        if (debugServer) {
           await Provider.of<Auth>(context, listen: false)
               .testConfirmOtp(widget.phoneNumber, otpCode);
         } else {

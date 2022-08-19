@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uz_app/screens/sceleton_screen.dart';
+import 'package:uz_app/widgets/cards/cell_size_card.dart';
 
 import '../../screens/menu.dart';
 import '../../screens/pay_screen.dart';
@@ -13,8 +15,6 @@ import '../../providers/orders.dart';
 import '../../utilities/styles.dart';
 import '../../models/lockers.dart';
 import '../../models/services.dart';
-import '../../widgets/main_block.dart';
-import '../../widgets/screen_title.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/tariff_dialog.dart';
 import '../../widgets/sww_dialog.dart';
@@ -29,7 +29,6 @@ class SizeSelectionScreen extends StatefulWidget {
 }
 
 class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
-  late bool _orderCreating;
   late Service? currentService;
   String? token;
   late Locker? locker;
@@ -41,13 +40,7 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
     token = Provider.of<Auth>(context, listen: false).token;
     currentService =
         Provider.of<ServiceNotifier>(context, listen: false).service;
-    if (currentService == null) {
-      Navigator.pushNamedAndRemoveUntil(
-          context, MenuScreen.routeName, (route) => false);
-      return null;
-    }
     cellTypes = currentService?.data["cell_types"] as List<ACLCellType>;
-
     locker = Provider.of<LockerNotifier>(context, listen: false).locker;
 
     try {
@@ -82,97 +75,99 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
 
   @override
   void initState() {
-    _orderCreating = false;
     _getFreeCellsFuture = _obtainGetFreeCellsFuture();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          iconTheme: const IconThemeData(size: 32),
-        ),
-        body: FutureBuilder(
-          future: _getFreeCellsFuture,
-          builder: (ctx, dataSnapshot) {
-            if (dataSnapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+    return SkeletonScreen(
+      title: 'acl.select_size'.tr(),
+      body: FutureBuilder(
+        future: _getFreeCellsFuture,
+        builder: (ctx, dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (dataSnapshot.error != null) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    "history.cant_display_orders".tr(),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
             } else {
-              if (dataSnapshot.error != null) {
+              final cellStatuses = dataSnapshot.data as List<CellStatus>?;
+              if (cellStatuses == null || cellStatuses.isEmpty) {
+                return const Center();
+              } else {
                 return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      "history.cant_display_orders".tr(),
-                      textAlign: TextAlign.center,
-                    ),
+                  child: SingleChildScrollView(
+                    child: _buildCellSizes(cellTypes, cellStatuses),
                   ),
                 );
-              } else {
-                final cellStatuses = dataSnapshot.data as List<CellStatus>?;
-                if (cellStatuses == null || cellStatuses.isEmpty) {
-                  return const Center();
-                } else {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: ScreenTitle(
-                          'acl.select_size'.tr(),
-                          subTitle: 'acl.service'.tr(
-                              namedArgs: {"service": currentService!.title}),
-                        ),
-                      ),
-                      MainBlock(
-                          child: Center(
-                        child: Container(
-                          constraints: const BoxConstraints(maxWidth: 700),
-                          child: GridView(
-                            gridDelegate:
-                                SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: 250,
-                                    childAspectRatio:
-                                        mediaQuery.size.width <= 310 ? 2 : 1),
-                            shrinkWrap: true,
-                            children: cellTypes.map((size) {
-                              final index = cellStatuses.indexWhere((element) =>
-                                  element.isThisTypeId(size.id.toString()));
-                              return cellSizeTile(
-                                  context: context,
-                                  mediaQuery: mediaQuery,
-                                  serviceCategoryType:
-                                      ServiceCategoryExt.typeToString(
-                                          currentService!.category),
-                                  algorithmType: currentService!
-                                      .data["algorithm"] as AlgorithmType,
-                                  tariffSelectionType: currentService!
-                                          .data["tariff_selection_type"]
-                                      as TariffSelectionType,
-                                  locker: locker,
-                                  cellType: size,
-                                  color: currentService!.color,
-                                  isExistFree: index > -1);
-                            }).toList(),
-                          ),
-                        ),
-                      )),
-                    ],
-                  );
-                }
               }
             }
-          },
-        ));
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildCellSizes(
+    List<ACLCellType> cellTypes,
+    List<CellStatus> cellStatuses,
+  ) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 30),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 60,
+        runSpacing: 40,
+        children: cellTypes.map((cellType) {
+          final index = cellStatuses.indexWhere(
+              (element) => element.isThisTypeId(cellType.id.toString()));
+          final cellSizeCard = CellSizeCard(
+            title: cellType.title,
+            symbol: cellType.symbol,
+          );
+          if (index < 0) {
+            return Opacity(opacity: 0.5, child: cellSizeCard);
+          } else {
+            return GestureDetector(
+              onTap: () {
+                final algorithm =
+                    currentService!.data["algorithm"] as AlgorithmType;
+                final serviceCategoryType =
+                    ServiceCategoryExt.typeToString(currentService!.category);
+
+                if (locker?.type == LockerType.free) {
+                  createFreeOrder(context, locker?.lockerId,
+                      serviceCategoryType, algorithm, cellType);
+                } else {
+                  tariffSelection(
+                    cellType: cellType,
+                    lockerId: locker?.lockerId,
+                    serviceCategoryType: serviceCategoryType,
+                    algorithmType: algorithm,
+                    context: context,
+                  );
+                }
+              },
+              child: cellSizeCard,
+            );
+          }
+        }).toList(),
+      ),
+    );
   }
 
   void tariffSelection({
     required ACLCellType cellType,
-    required Color tileColor,
     required int? lockerId,
     required String serviceCategoryType,
     required AlgorithmType algorithmType,
@@ -180,10 +175,7 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
   }) async {
     var chosenTariff = await showDialog<Tariff>(
       context: context,
-      builder: (ctx) => TariffDialog(
-        cellType,
-        tileColor: tileColor,
-      ),
+      builder: (ctx) => TariffDialog(cellType),
     );
     if (chosenTariff != null) {
       String? orderedCell;
@@ -391,125 +383,5 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
             });
       }
     }
-  }
-
-  Widget cellSizeTile(
-      {required BuildContext context,
-      required MediaQueryData mediaQuery,
-      required String serviceCategoryType,
-      required AlgorithmType algorithmType,
-      required TariffSelectionType tariffSelectionType,
-      required Locker? locker,
-      required ACLCellType cellType,
-      required Color color,
-      bool isExistFree = true}) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            primary: color,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-        onPressed: isExistFree
-            ? () {
-                if (locker?.type == LockerType.free) {
-                  setState(() {
-                    _orderCreating = true;
-                  });
-                  createFreeOrder(context, locker?.lockerId,
-                      serviceCategoryType, algorithmType, cellType);
-                  setState(() {
-                    _orderCreating = false;
-                  });
-                } else {
-                  tariffSelection(
-                    cellType: cellType,
-                    lockerId: locker?.lockerId,
-                    serviceCategoryType: serviceCategoryType,
-                    algorithmType: algorithmType,
-                    tileColor: color,
-                    context: context,
-                  );
-                }
-              }
-            : null,
-        child: _orderCreating
-            ? const Center(
-                child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    )))
-            : Center(
-                child: mediaQuery.size.width <= 310
-                    ? Row(
-                        children: [
-                          if (cellType.symbol != null)
-                            Expanded(
-                              flex: 1,
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                  cellType.symbol ?? "",
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 2),
-                              child: FittedBox(
-                                child: Text(
-                                  cellType.title,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          if (cellType.symbol != null)
-                            Expanded(
-                              flex: 2,
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                  cellType.symbol ?? "",
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 2),
-                              child: FittedBox(
-                                child: Text(
-                                  cellType.title,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 7),
-                        ],
-                      ),
-              ),
-      ),
-    );
   }
 }

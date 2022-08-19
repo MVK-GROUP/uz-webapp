@@ -5,11 +5,8 @@ import '../utilities/styles.dart';
 
 class TariffDialog extends StatelessWidget {
   final ACLCellType cellType;
-  final Color tileColor;
 
-  const TariffDialog(this.cellType,
-      {Key? key, this.tileColor = AppColors.mainColor})
-      : super(key: key);
+  const TariffDialog(this.cellType, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +57,7 @@ class TariffDialog extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10)),
-                                    primary: tileColor),
+                                    primary: AppColors.secondaryColor),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
