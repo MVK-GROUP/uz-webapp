@@ -52,15 +52,15 @@
         "not_implemented_text": "This functionality will be implemented later",
         "pick_up_stuff": "Pick Up Stuff",
         "find_locker": "Find Locker",
-        "history": "Order history"
+        "history": "Orders"
     },
     "history": {
-        "title": "Order History",
+        "title": "Orders",
         "active_orders": "Active Orders",
         "completed_orders": "Old Orders",
         "technical_problems": "Unfortunately, we cannot display your orders due to technical problems",
         "order_number": "Order #{id}",
-        "order_status_title": "Order Status: ",
+        "order_status_title": "Status: ",
         "order_status_cancelled": "cancelled",
         "order_status_error": "error",
         "order_status_expired": "time expired",

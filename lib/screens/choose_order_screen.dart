@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:uz_app/screens/history/components/order_detail_manage.dart';
 import 'package:uz_app/screens/sceleton_screen.dart';
 import '../models/order.dart';
 import 'package:provider/provider.dart';
 
 import '../utilities/styles.dart';
 import '../widgets/list/order_list.dart';
-import 'history/order_detail_notifier_dialog.dart';
 
 class ChooseOrderScreen extends StatelessWidget {
   static const routeName = 'choose-order/';
@@ -52,7 +52,7 @@ class ChooseOrderScreen extends StatelessWidget {
       context: context,
       builder: (ctx) => ChangeNotifierProvider.value(
         value: order,
-        child: const OrderDetailNotifierDialog(),
+        child: const OrderDetailManageDialog(),
       ),
     );
   }

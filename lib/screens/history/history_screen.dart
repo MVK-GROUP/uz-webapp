@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:uz_app/screens/history/order_detail.dart';
+import 'package:uz_app/screens/history/components/order_detail_manage.dart';
 import 'package:uz_app/widgets/button.dart';
 import '../../widgets/list/order_list.dart';
 import '/models/order.dart';
@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../../providers/orders.dart';
 import '../menu.dart';
 import '../../utilities/styles.dart';
-import '../../widgets/cards/order_tile.dart';
 
 class HistoryScreen extends StatefulWidget {
   static const routeName = 'history/';
@@ -57,12 +56,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0.0,
+          backgroundColor: Colors.transparent,
           iconTheme: const IconThemeData(size: 32),
           title: FittedBox(
             fit: BoxFit.fitWidth,
             child: Text(
               'history.title'.tr(),
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: AppColors.secondaryColor,
+              ),
             ),
           ),
           centerTitle: true,
@@ -75,7 +79,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               },
               icon: const Icon(
                 Icons.home,
-                color: Colors.white,
+                color: AppColors.secondaryColor,
               ),
             ),
             const SizedBox(width: 10)
@@ -134,7 +138,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
     await showDialog(
       barrierColor: Colors.transparent,
       context: context,
-      builder: (ctx) => OrderDetailDialog(order),
+      builder: (ctx) => ChangeNotifierProvider.value(
+        value: order,
+        child: const OrderDetailManageDialog(),
+      ),
     );
   }
 
@@ -185,9 +192,12 @@ class CompletedOrdersDisplay extends StatelessWidget {
                     child: OrderList(
                       orders,
                       onPressed: (OrderData orderData) => showDialog(
-                        barrierColor: Colors.black12,
+                        barrierColor: Colors.transparent,
                         context: context,
-                        builder: (ctx) => OrderDetailDialog(orderData),
+                        builder: (ctx) => ChangeNotifierProvider.value(
+                          value: orderData,
+                          child: const OrderDetailManageDialog(),
+                        ),
                       ),
                     ),
                   ),
@@ -217,7 +227,10 @@ class ActiveOrdersDisplay extends StatelessWidget {
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: OrderDetail(orders.first),
+                child: ChangeNotifierProvider.value(
+                  value: orders.first,
+                  child: const OrderDetailManageWidget(),
+                ),
               ),
             ),
           if (ordersQuantity > 1)
@@ -225,9 +238,12 @@ class ActiveOrdersDisplay extends StatelessWidget {
               child: OrderList(
                 orders,
                 onPressed: (OrderData orderData) => showDialog(
-                  barrierColor: Colors.black12,
+                  barrierColor: Colors.transparent,
                   context: context,
-                  builder: (ctx) => OrderDetailDialog(orderData),
+                  builder: (ctx) => ChangeNotifierProvider.value(
+                    value: orderData,
+                    child: const OrderDetailManageDialog(),
+                  ),
                 ),
               ),
             ),

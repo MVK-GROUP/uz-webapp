@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uz_app/screens/auth/welcome.dart';
 import 'package:uz_app/screens/feedback.dart';
+import 'package:uz_app/screens/history/components/order_detail_manage.dart';
 
 import 'choose_order_screen.dart';
 import 'acl/size_selection_screen.dart';
 import 'auth/enter_phone.dart';
-import 'history/order_detail_notifier_dialog.dart';
 import 'history/history_screen.dart';
 import 'enter_lockerid_screen.dart';
 import '../api/http_exceptions.dart';
@@ -76,13 +76,13 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _showFloatingButton
-          ? FloatingActionButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, FeedbackScreen.routeName),
-              child: const Icon(Icons.question_mark),
-            )
-          : null,
+      //floatingActionButton: _showFloatingButton
+      //    ? FloatingActionButton(
+      //        onPressed: () =>
+      //            Navigator.pushNamed(context, FeedbackScreen.routeName),
+      //        child: const Icon(Icons.question_mark),
+      //      )
+      //    : null,
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
@@ -113,6 +113,15 @@ class _MenuScreenState extends State<MenuScreen> {
             icon: const Icon(Icons.exit_to_app),
           ),
           const Spacer(),
+          if (_showFloatingButton)
+            IconButton(
+              iconSize: 26,
+              color: AppColors.textColor,
+              onPressed: () =>
+                  Navigator.pushNamed(context, FeedbackScreen.routeName),
+              icon: const Icon(Icons.question_mark),
+            ),
+          const SizedBox(width: 10),
           IconButton(
             iconSize: 36,
             color: AppColors.textColor,
@@ -248,7 +257,7 @@ class _MenuScreenState extends State<MenuScreen> {
       context: context,
       builder: (ctx) => ChangeNotifierProvider.value(
         value: order,
-        child: const OrderDetailNotifierDialog(),
+        child: const OrderDetailManageDialog(),
       ),
     );
   }

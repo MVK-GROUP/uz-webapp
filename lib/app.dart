@@ -155,6 +155,7 @@ class App extends StatelessWidget {
   ThemeData _theme() {
     return ThemeData(
       scaffoldBackgroundColor: AppColors.backgroundColor,
+      primarySwatch: AppColors.secondaryMaterialColor,
       iconTheme: const IconThemeData(color: AppColors.textColor),
       textTheme: GoogleFonts.openSansTextTheme(
         const TextTheme(

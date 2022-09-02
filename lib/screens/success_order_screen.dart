@@ -33,7 +33,6 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
   Timer? timer;
   Timer? _cellOpeningTimer;
   var _isInit = false;
-  var _isUseOpenCellButton = false;
   var _isOrderStatusChecking = false;
   var _isCellOpening = false;
   int maxAttempts = 14;
@@ -60,59 +59,48 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
       order = existArgs["order"] as OrderData;
       text = existArgs["title"] as String;
 
-      if (order.data!.containsKey("algorithm") &&
-          [AlgorithmType.qrReading, AlgorithmType.enterPinOnComplex]
-              .contains(order.data!["algorithm"])) {
-        setState(() {
-          _isUseOpenCellButton = false;
-        });
-      } else {
-        setState(() {
-          _isUseOpenCellButton = true;
-          _isOrderStatusChecking = true;
-        });
-        int attempt = 0;
-        attempt++;
-        timer = Timer.periodic(const Duration(seconds: 1, milliseconds: 500),
-            (timer) async {
-          try {
-            attempt++;
-            var checkedOrder =
-                await Provider.of<OrdersNotifier>(context, listen: false)
-                    .checkOrder(order.id);
-            if (![OrderStatus.created, OrderStatus.inProgress]
-                .contains(checkedOrder.status)) {
-              timer.cancel();
-              setState(() {
-                _isOrderStatusChecking = false;
-              });
-              if (checkedOrder.status == OrderStatus.error ||
-                  checkedOrder.timeLeftInSeconds < 1) {
-                throw Exception("order error");
-              }
-            }
-            if (attempt > maxAttempts) {
-              timer.cancel();
-              setState(() {
-                _isOrderStatusChecking = false;
-              });
-              throw Exception("order error");
-            }
-          } catch (e) {
+      int attempt = 0;
+      attempt++;
+      timer = Timer.periodic(const Duration(seconds: 1, milliseconds: 500),
+          (timer) async {
+        try {
+          attempt++;
+          var checkedOrder =
+              await Provider.of<OrdersNotifier>(context, listen: false)
+                  .checkOrder(order.id);
+          if (![OrderStatus.created, OrderStatus.inProgress]
+              .contains(checkedOrder.status)) {
             timer.cancel();
-            showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                      content: Text(
-                          "create_order.cant_check_status__go_to_detail".tr()),
-                    ));
             setState(() {
-              _isUseOpenCellButton = false;
               _isOrderStatusChecking = false;
             });
+            if (checkedOrder.status == OrderStatus.error ||
+                checkedOrder.timeLeftInSeconds < 1) {
+              throw Exception("order error");
+            }
           }
-        });
-      }
+          if (attempt > maxAttempts) {
+            timer.cancel();
+            setState(() {
+              _isOrderStatusChecking = false;
+            });
+            throw Exception("order error");
+          }
+        } catch (e) {
+          timer.cancel();
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    content: Text(
+                        "create_order.cant_check_status__go_to_detail".tr()),
+                  ));
+          Navigator.pushNamedAndRemoveUntil(
+              context, HistoryScreen.routeName, (route) => false);
+          setState(() {
+            _isOrderStatusChecking = false;
+          });
+        }
+      });
     }
     _isInit = true;
     super.didChangeDependencies();
@@ -175,36 +163,22 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
                       const SizedBox(height: 10),
                       Column(
                         children: [
-                          if (_isUseOpenCellButton)
-                            _isOrderStatusChecking || _isCellOpening
-                                ? ElevatedWaitingButton(
-                                    text: "acl.open_cell_and_put_stuff".tr(),
-                                    iconSize: 20,
-                                  )
-                                : ElevatedIconButton(
-                                    icon: const Icon(
-                                      Icons.clear_all_outlined,
-                                      size: 24,
-                                    ),
-                                    text: "acl.open_cell_and_put_stuff".tr(),
-                                    onPressed: () {
-                                      openCell();
-                                    },
+                          _isOrderStatusChecking || _isCellOpening
+                              ? ElevatedWaitingButton(
+                                  text: "acl.open_cell_and_put_stuff".tr(),
+                                  iconSize: 20,
+                                )
+                              : ElevatedIconButton(
+                                  icon: const Icon(
+                                    Icons.clear_all_outlined,
+                                    size: 24,
                                   ),
-                          const SizedBox(height: 10),
-                          if (!_isUseOpenCellButton || !_isOrderStatusChecking)
-                            ElevatedIconButton(
-                              icon: const Icon(Icons.history),
-                              text: "create_order.go_to_detail".tr(),
-                              onPressed: _isCellOpening
-                                  ? null
-                                  : () {
-                                      Navigator.pushReplacementNamed(
-                                          context, HistoryScreen.routeName,
-                                          arguments: order);
-                                    },
-                            ),
-                          const SizedBox(height: 15)
+                                  text: "acl.open_cell_and_put_stuff".tr(),
+                                  onPressed: () {
+                                    openCell();
+                                  },
+                                ),
+                          const SizedBox(height: 15),
                         ],
                       ),
                       const SizedBox(height: 15),
@@ -233,7 +207,6 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
               ));
       setState(() {
         _isCellOpening = false;
-        _isUseOpenCellButton = false;
       });
       return;
     }
@@ -246,8 +219,10 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
         context, order.status == OrderStatus.active ? 1 : 2);
     setState(() {
       _isCellOpening = false;
-      _isUseOpenCellButton = false;
     });
+
+    Navigator.pushNamedAndRemoveUntil(
+        context, HistoryScreen.routeName, (route) => false);
   }
 
   Future<void> checkChangingOrder({attempts = 0, maxAttempts = 10}) async {

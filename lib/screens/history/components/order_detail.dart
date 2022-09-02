@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:uz_app/screens/feedback.dart';
 import '/screens/menu.dart';
 
-import '../../models/order.dart';
-import '../../utilities/styles.dart';
-import '../../widgets/button.dart';
-import '../../widgets/order_element_widget.dart';
+import '../../../models/order.dart';
+import '../../../utilities/styles.dart';
+import '../../../widgets/button.dart';
+import '../../../widgets/order_element_widget.dart';
 
-class _OrderDetailContent extends StatelessWidget {
+class OrderInfo extends StatelessWidget {
   final OrderData order;
-  const _OrderDetailContent(this.order, {Key? key}) : super(key: key);
+  const OrderInfo(this.order, {Key? key}) : super(key: key);
 
   String get orderStatusText {
     var text = "history.order_status_title".tr();
@@ -94,15 +94,6 @@ class _OrderDetailContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: OrderElementWidget(
-            iconData: Icons.shopping_bag_outlined,
-            text: order.title,
-            iconSize: 26,
-            textStyle: AppStyles.bodyText2,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: OrderElementWidget(
             iconData: Icons.calendar_month,
             text: order.humanDate,
             iconSize: 26,
@@ -137,6 +128,21 @@ class _OrderDetailContent extends StatelessWidget {
             textStyle: AppStyles.bodyText2.copyWith(color: orderStatusColor),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _OrderDetailContent extends StatelessWidget {
+  final OrderData order;
+  const _OrderDetailContent(this.order, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        OrderInfo(order),
         const SizedBox(height: 20),
         if (order.status != OrderStatus.completed)
           ElevatedDefaultButton(

@@ -3,17 +3,18 @@ import 'dart:js' as js show context;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../feedback.dart';
 import '/providers/auth.dart';
 import '/providers/orders.dart';
 import 'package:provider/provider.dart';
 
-import '../../api/orders.dart';
-import '../../models/lockers.dart';
-import '../../models/order.dart';
-import '../../utilities/styles.dart';
-import '../../widgets/button.dart';
-import '../../widgets/confirm_dialog.dart';
-import '../../widgets/order_element_widget.dart';
+import '../../../api/orders.dart';
+import '../../../models/lockers.dart';
+import '../../../models/order.dart';
+import '../../../utilities/styles.dart';
+import '../../../widgets/button.dart';
+import '../../../widgets/confirm_dialog.dart';
+import '../../../widgets/order_element_widget.dart';
 
 enum OpenCellType {
   firstOpenCell,
@@ -51,8 +52,8 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
     if (!_isInit) {
       token = Provider.of<Auth>(context, listen: false).token;
       order = Provider.of<OrderData>(context, listen: true);
+      _isInit = true;
     }
-    _isInit = true;
     super.didChangeDependencies();
   }
 
@@ -102,6 +103,19 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
     }
     return ElevatedDefaultButton(
       buttonColor: AppColors.mainColor,
+      onPressed: isJustCellOpening || isCellOpening
+          ? null
+          : () async {
+              var confirmDialog = await showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    return ConfirmDialog(
+                        title: "attention_title".tr(), text: confirmText);
+                  });
+              if (confirmDialog != null) {
+                openCell(openCellType: openCellType);
+              }
+            },
       child: isCellOpening
           ? const SizedBox(
               width: 25,
@@ -116,19 +130,6 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
-      onPressed: isJustCellOpening || isCellOpening
-          ? null
-          : () async {
-              var confirmDialog = await showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return ConfirmDialog(
-                        title: "attention_title".tr(), text: confirmText);
-                  });
-              if (confirmDialog != null) {
-                openCell(openCellType: openCellType);
-              }
-            },
     );
   }
 
@@ -141,6 +142,19 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
 
     return ElevatedDefaultButton(
       buttonColor: AppColors.mainColor,
+      onPressed: isJustCellOpening || isCellOpening
+          ? null
+          : () async {
+              var confirmDialog = await showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    return ConfirmDialog(
+                        title: "attention_title".tr(), text: confirmText);
+                  });
+              if (confirmDialog != null) {
+                openCell(openCellType: openCellType, isJustOpen: true);
+              }
+            },
       child: isJustCellOpening
           ? const SizedBox(
               width: 25,
@@ -155,19 +169,6 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
-      onPressed: isJustCellOpening || isCellOpening
-          ? null
-          : () async {
-              var confirmDialog = await showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return ConfirmDialog(
-                        title: "attention_title".tr(), text: confirmText);
-                  });
-              if (confirmDialog != null) {
-                openCell(openCellType: openCellType, isJustOpen: true);
-              }
-            },
     );
   }
 
@@ -205,20 +206,6 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
   ElevatedDefaultButton putThingsButton(BuildContext context) {
     return ElevatedDefaultButton(
       buttonColor: AppColors.mainColor,
-      child: isCellOpening
-          ? const SizedBox(
-              width: 25,
-              height: 25,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
-          : Text(
-              "acl.open_cell_and_put_stuff".tr(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-            ),
       onPressed: isJustCellOpening || isCellOpening
           ? null
           : () async {
@@ -237,6 +224,20 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
                 openCell();
               }
             },
+      child: isCellOpening
+          ? const SizedBox(
+              width: 25,
+              height: 25,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            )
+          : Text(
+              "acl.open_cell_and_put_stuff".tr(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
     );
   }
 
@@ -258,20 +259,6 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
             child: btn,
           )),
     ];
-  }
-
-  RichText usePincodeWidget(BuildContext context) {
-    var pinCode = order.data!["pin"] as String?;
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
-        TextSpan(text: "history.you_can_use_pin".tr()),
-        TextSpan(
-          text: pinCode,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ]),
-    );
   }
 
   void showDialogByOpenCellTaskStatus(BuildContext context, int status) async {
@@ -439,22 +426,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
   }
 
   Widget buildAclSection(BuildContext context, OrderData order) {
-    Widget? cellIdWidget = order.data!.containsKey("cell_id")
-        ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: OrderElementWidget(
-                iconData: Icons.clear_all,
-                text: "cell_number"
-                    .tr(namedArgs: {"cell": order.data!["cell_id"].toString()}),
-                iconSize: 26,
-                textStyle: AppStyles.bodyText2),
-          )
-        : null;
-
     List<Widget> content = [];
-    if (cellIdWidget != null) {
-      content.add(cellIdWidget);
-    }
 
     if (order.status == OrderStatus.completed) {
       content.addAll(
@@ -495,66 +467,19 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
           style: const TextStyle(fontSize: 16),
         ),
       ));
-      //content.add(Padding(
-      //  padding: const EdgeInsets.only(bottom: 8.0),
-      //  child: Text(
-      //    "Залишилось: ${order.humanTimeLeft}",
-      //    style: const TextStyle(fontSize: 16),
-      //  ),
-      //));
 
-      final algorithm = order.data!["algorithm"] as AlgorithmType;
-      switch (algorithm) {
-        case AlgorithmType.enterPinOnComplex:
-          var pinCode = order.data!["pin"] as String?;
-          content.add(Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 20),
-            child: Column(
-              children: [
-                Text("history.pincode_to_open".tr()),
-                Text(
-                  pinCode ?? "ERROR",
-                  style: const TextStyle(
-                      fontSize: 40, fontWeight: FontWeight.w700),
-                ),
-              ],
-            ),
-          ));
-          content.addAll(actionsSection(actionButtons: []));
-          break;
-        case AlgorithmType.selfService:
-          if (order.status == OrderStatus.active) {
-            content.add(
-              Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: justOpenCellButton(context, order)),
-            );
-          }
-          content.add(
-            Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: openCellButton(context, order)),
-          );
-          break;
-        case AlgorithmType.selfPlusPin:
-          content.add(
-            Padding(
-                padding: const EdgeInsets.only(bottom: 6.0, top: 10.0),
-                child: openCellButton(context, order)),
-          );
-          content.add(
-            Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 10),
-                child: usePincodeWidget(context)),
-          );
-          break;
-
-        default:
-          content.add(const Center(
-            child: Text("Unknown algorithm"),
-          ));
-          break;
+      if (order.status == OrderStatus.active) {
+        content.add(
+          Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: justOpenCellButton(context, order)),
+        );
       }
+      content.add(
+        Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: openCellButton(context, order)),
+      );
     } else if (order.status == OrderStatus.completed) {
       content.addAll(
         actionsSection(
@@ -571,6 +496,30 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
         ),
       ));
     }
+    content.add(const SizedBox(height: 10));
+    content.add(
+      Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: TextButton(
+          child: Text(
+            "report_problem".tr(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.dangerousColor),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FeedbackScreen(order: order),
+              ),
+            );
+          },
+        ),
+      ),
+    );
     return Column(children: content);
   }
 }
