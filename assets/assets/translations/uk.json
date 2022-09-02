@@ -52,15 +52,15 @@
         "not_implemented_text": "Даний функціонал буде реалізовано пізніше",
         "pick_up_stuff": "Забрати речі",
         "find_locker": "Знайти комплекс",
-        "history": "Історія замовлень"
+        "history": "Замовлення"
     },
     "history": {
-        "title": "Історія замовлень",
+        "title": "Замовлення",
         "active_orders": "Активні замовлення",
         "completed_orders": "Старі замовлення",
         "technical_problems": "На жаль не можемо відобразити Ваші замовлення через технічні проблеми",
         "order_number": "Замовлення #{id}",
-        "order_status_title": "Статус замовлення: ",
+        "order_status_title": "Статус: ",
         "order_status_canceled": "скасовано",
         "order_status_error": "помилка",
         "order_status_expired": "час вийшов",
