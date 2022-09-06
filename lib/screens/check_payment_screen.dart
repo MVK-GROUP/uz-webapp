@@ -51,11 +51,8 @@ class _CheckPaymentScreenState extends State<CheckPaymentScreen> {
     try {
       await Provider.of<OrdersNotifier>(context, listen: false)
           .fetchAndSetOrders();
-      if (widget.type == PaymentType.errorPayment ||
-          widget.type == PaymentType.successPayment) {
-        await Provider.of<LockerNotifier>(context, listen: false)
-            .setLockerByOrderId(widget.orderId);
-      }
+      await Provider.of<LockerNotifier>(context, listen: false)
+          .setLockerByOrderId(widget.orderId);
     } catch (e) {}
 
     if (widget.type == PaymentType.successPayment) {

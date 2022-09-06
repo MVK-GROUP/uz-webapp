@@ -185,7 +185,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
               ),
             )
           : Text(
-              "acl.pay_debt_and_pick_up_stuff".tr(),
+              "pay_debt".tr(),
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
