@@ -211,7 +211,7 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
       return;
     }
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
 
     await checkChangingOrder();
     if (!mounted) return;

@@ -328,7 +328,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
       return;
     }
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
 
     if (openCellType == OpenCellType.openCell) {
       int status = 0;
