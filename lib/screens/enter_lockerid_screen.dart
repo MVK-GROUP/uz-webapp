@@ -62,13 +62,13 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: Column(children: [
-                        _buildTitle('set_locker.scan_qr'.tr()),
-                        const SizedBox(height: 16),
-                        _buildQr(),
-                        _buildDivider(),
                         _buildTitle('set_locker.enter_locker_id'.tr()),
                         const SizedBox(height: 6),
                         _buildLockerIdInputWidget(),
+                        _buildDivider(),
+                        _buildTitle('set_locker.scan_qr'.tr()),
+                        const SizedBox(height: 16),
+                        _buildQr(),
                       ]),
                     ),
                   ),

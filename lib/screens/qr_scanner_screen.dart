@@ -21,7 +21,6 @@ class QrScannerScreen extends StatelessWidget {
           controller: cameraController,
           onDetect: (barcode, args) {
             final String qrData = barcode.rawValue ?? '';
-            print("QR DATA: $qrData");
             if (Uri.tryParse(qrData) != null) {
               Map? queryParameters;
               var uriData = Uri.parse(qrData);
