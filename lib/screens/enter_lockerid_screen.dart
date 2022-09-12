@@ -26,12 +26,9 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
   var isFetchingData = false;
 
   String lockerId = "";
-  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final bottom = MediaQuery.of(context).viewInsets.bottom;
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.backgroundColor,
@@ -63,7 +60,7 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
                   child: SingleChildScrollView(
                     reverse: true,
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: bottom),
+                      padding: const EdgeInsets.only(bottom: 20),
                       child: Column(children: [
                         _buildTitle('set_locker.scan_qr'.tr()),
                         const SizedBox(height: 16),
@@ -173,18 +170,6 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
   }
 
   Widget _buildLockerIdInputWidget() {
-    //Container(
-    //                    constraints: const BoxConstraints(maxWidth: 350),
-    //                    child: Form(
-    //                      key: formKey,
-    //                      child: Padding(
-    //                        padding: const EdgeInsets.symmetric(
-    //                            vertical: 0, horizontal: 30),
-    //                        child: buildLockerIdInputWidget(),
-    //                      ),
-    //                    ),
-    //                  ),
-
     return Container(
       constraints: const BoxConstraints(maxWidth: 410),
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uz_app/api/orders.dart';
 import 'package:uz_app/models/order.dart';
 import 'package:uz_app/providers/auth.dart';
@@ -64,12 +65,17 @@ class _FeedbackFormState extends State<FeedbackForm> {
   late DropdownOrderItem _currentOrder;
 
   late TextEditingController _emailController;
-  late TextEditingController _telegramController;
   late TextEditingController _phoneController;
   late TextEditingController _messageController;
 
+  final _formKey = GlobalKey<FormState>();
+
+  late FocusNode _emailFocus;
+  late FocusNode _problemOrderFocus;
+  late FocusNode _phoneFocus;
+  late FocusNode _messageFocus;
+
   bool _emailIsNotValid = false;
-  bool _telegramIsNotValid = false;
   bool _phoneIsNotValid = false;
   bool _isSending = false;
 
@@ -100,9 +106,13 @@ class _FeedbackFormState extends State<FeedbackForm> {
   @override
   void initState() {
     _emailController = TextEditingController();
-    _telegramController = TextEditingController();
     _phoneController = TextEditingController();
     _messageController = TextEditingController();
+    _emailFocus = FocusNode();
+    _problemOrderFocus = FocusNode();
+    _phoneFocus = FocusNode();
+    _messageFocus = FocusNode();
+
     _currentOrder = widget.order != null
         ? DropdownOrderItem(
             widget.order!.id,
@@ -119,10 +129,22 @@ class _FeedbackFormState extends State<FeedbackForm> {
   @override
   void dispose() {
     _emailController.dispose();
-    _telegramController.dispose();
     _phoneController.dispose();
     _messageController.dispose();
+    _emailFocus.dispose();
+    _problemOrderFocus.dispose();
+    _phoneFocus.dispose();
+    _messageFocus.dispose();
     super.dispose();
+  }
+
+  void _fieldFocusChange(FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
+
+  void _fieldFocusSet(FocusNode nextFocus) {
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 
   @override
@@ -130,141 +152,158 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 10),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              "feedback.how_to_contact".tr(),
-              style: ThemeData().textTheme.headline3,
+          padding:
+              const EdgeInsets.only(top: 20.0, bottom: 10, left: 10, right: 10),
+          child: ElevatedButton.icon(
+            icon: const Icon(
+              Icons.send,
+              size: 16,
+            ),
+            onPressed: () {
+              final url = Uri.https('t.me', 'technicalsupportmvk');
+              launchUrl(url);
+            },
+            style: ElevatedButton.styleFrom(
+              primary: AppColors.secondaryColor,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            label: Text(
+              'feedback.contact_in_tg'.tr(),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ),
-        Opacity(
-          opacity: _communicateMethod == 'email' ? 1.0 : 0.5,
-          child: RadioOption(
-            text: 'feedback.email'.tr(),
-            value: 'email',
-            textField: TextField(
-              onChanged: (value) {
-                if (_emailIsNotValid) {
-                  setState(() {
-                    _emailIsNotValid = !_emailIsNotValid;
-                  });
-                }
-              },
-              readOnly: _communicateMethod != 'email',
-              controller: _emailController,
-              decoration: textFieldInputDecoration(
-                  isError: _emailIsNotValid,
-                  hintText: 'feedback.email_placeholder'.tr()),
-              autofillHints: const [AutofillHints.email],
-            ),
-            onChange: onChange,
-            groupValue: _communicateMethod,
-          ),
-        ),
-        Opacity(
-          opacity: _communicateMethod == 'telegram' ? 1.0 : 0.5,
-          child: RadioOption(
-            text: 'feedback.telegram'.tr(),
-            value: 'telegram',
-            textField: TextField(
-              readOnly: _communicateMethod != 'telegram',
-              controller: _telegramController,
-              onChanged: (value) {
-                if (_telegramIsNotValid) {
-                  setState(() {
-                    _telegramIsNotValid = !_telegramIsNotValid;
-                  });
-                }
-              },
-              decoration: textFieldInputDecoration(
-                  isError: _telegramIsNotValid,
-                  hintText: 'feedback.telegram_placeholder'.tr()),
-            ),
-            onChange: onChange,
-            groupValue: _communicateMethod,
-          ),
-        ),
-        Opacity(
-          opacity: _communicateMethod == 'call' ? 1.0 : 0.5,
-          child: RadioOption(
-            text: 'feedback.phone'.tr(),
-            value: 'call',
-            textField: TextField(
-              readOnly: _communicateMethod != 'call',
-              controller: _phoneController,
-              onChanged: (value) {
-                if (_phoneIsNotValid) {
-                  setState(() {
-                    _phoneIsNotValid = !_phoneIsNotValid;
-                  });
-                }
-              },
-              decoration: textFieldInputDecoration(
-                  isError: _phoneIsNotValid,
-                  hintText: "feedback.phone_placeholder".tr()),
-            ),
-            onChange: onChange,
-            groupValue: _communicateMethod,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 10),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              "feedback.select_problem_order".tr(),
-              style: ThemeData().textTheme.headline3,
-            ),
-          ),
-        ),
-        ProblemOrderSelect(
-          initItem: _currentOrder,
-          values: dropdownOrderItems,
-          onChange: (DropdownOrderItem? newValue) {
-            if (newValue != null) {
-              setState(() {
-                _currentOrder = newValue;
-              });
-            }
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 10),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              "feedback.message".tr(),
-              style: ThemeData().textTheme.headline3,
-            ),
-          ),
-        ),
-        TextField(
-          maxLines: 5,
-          controller: _messageController,
-          decoration: textFieldInputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-              hintText: "feedback.message_placeholder".tr()),
-        ),
-        const SizedBox(height: 40),
-        ElevatedDefaultButton(
-          onPressed: _isSending ? () {} : sendFeedback,
-          child: _isSending
-              ? Container(
-                  padding: const EdgeInsets.all(5),
-                  width: 26,
-                  height: 26,
-                  child: const CircularProgressIndicator(
-                    color: Colors.white,
-                  ))
-              : Text(
-                  'feedback.send'.tr(),
-                  style: const TextStyle(fontSize: 20),
+        Text('feedback.or_fill_in_form'.tr()),
+        Form(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "feedback.how_to_contact".tr(),
+                    style: ThemeData().textTheme.headline3,
+                  ),
                 ),
+              ),
+              Opacity(
+                opacity: _communicateMethod == 'email' ? 1.0 : 0.5,
+                child: RadioOption(
+                  text: 'feedback.email'.tr(),
+                  value: 'email',
+                  textField: TextFormField(
+                    focusNode: _emailFocus,
+                    onFieldSubmitted: (_) =>
+                        _fieldFocusChange(_emailFocus, _problemOrderFocus),
+                    onChanged: (value) {
+                      if (_emailIsNotValid) {
+                        setState(() {
+                          _emailIsNotValid = !_emailIsNotValid;
+                        });
+                      }
+                    },
+                    readOnly: _communicateMethod != 'email',
+                    controller: _emailController,
+                    decoration: textFieldInputDecoration(
+                        isError: _emailIsNotValid,
+                        hintText: 'feedback.email_placeholder'.tr()),
+                    autofillHints: const [AutofillHints.email],
+                  ),
+                  onChange: onChange,
+                  groupValue: _communicateMethod,
+                ),
+              ),
+              Opacity(
+                opacity: _communicateMethod == 'call' ? 1.0 : 0.5,
+                child: RadioOption(
+                  text: 'feedback.phone'.tr(),
+                  value: 'call',
+                  textField: TextFormField(
+                    focusNode: _phoneFocus,
+                    onFieldSubmitted: (_) =>
+                        _fieldFocusChange(_phoneFocus, _problemOrderFocus),
+                    readOnly: _communicateMethod != 'call',
+                    controller: _phoneController,
+                    onChanged: (value) {
+                      if (_phoneIsNotValid) {
+                        setState(() {
+                          _phoneIsNotValid = !_phoneIsNotValid;
+                        });
+                      }
+                    },
+                    decoration: textFieldInputDecoration(
+                        isError: _phoneIsNotValid,
+                        hintText: "feedback.phone_placeholder".tr()),
+                  ),
+                  onChange: onChange,
+                  groupValue: _communicateMethod,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 10),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "feedback.select_problem_order".tr(),
+                    style: ThemeData().textTheme.headline3,
+                  ),
+                ),
+              ),
+              ProblemOrderSelect(
+                initItem: _currentOrder,
+                focusNode: _problemOrderFocus,
+                values: dropdownOrderItems,
+                onChange: (DropdownOrderItem? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      _currentOrder = newValue;
+                    });
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 10),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "feedback.message".tr(),
+                    style: ThemeData().textTheme.headline3,
+                  ),
+                ),
+              ),
+              TextFormField(
+                maxLines: 3,
+                focusNode: _messageFocus,
+                controller: _messageController,
+                decoration: textFieldInputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 14),
+                    hintText: "feedback.message_placeholder".tr()),
+              ),
+              const SizedBox(height: 20),
+              ElevatedDefaultButton(
+                onPressed: _isSending ? () {} : sendFeedback,
+                child: _isSending
+                    ? Container(
+                        padding: const EdgeInsets.all(5),
+                        width: 26,
+                        height: 26,
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                        ))
+                    : Text(
+                        'feedback.send'.tr(),
+                        style: const TextStyle(fontSize: 20),
+                      ),
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
-        const SizedBox(height: 40),
       ],
     );
   }
@@ -282,17 +321,6 @@ class _FeedbackFormState extends State<FeedbackForm> {
           isNotValidMessage = 'feedback.email_is_not_valid'.tr();
         }
         communicateMethodValue = _emailController.text;
-        break;
-      case 'telegram':
-        if (_telegramController.text.length < 5) {
-          setState(() => _telegramIsNotValid = true);
-          isNotValidMessage = 'feedback.telegram_id_is_not_valid'.tr();
-        }
-        communicateMethodValue = _telegramController.text;
-        if (!communicateMethodValue.startsWith('@')) {
-          print('no @');
-          communicateMethodValue = "@$communicateMethodValue";
-        }
         break;
       case 'call':
         if (_phoneController.text.length < 5) {
@@ -400,7 +428,7 @@ class RadioOption extends StatelessWidget {
   final String groupValue;
   final String value;
   final Function(String?)? onChange;
-  final TextField? textField;
+  final Widget? textField;
   const RadioOption(
       {required this.text,
       this.textField,
@@ -443,10 +471,12 @@ class ProblemOrderSelect extends StatelessWidget {
   final DropdownOrderItem initItem;
   final List<DropdownOrderItem> values;
   final Function(DropdownOrderItem?) onChange;
+  final FocusNode? focusNode;
   const ProblemOrderSelect({
     required this.initItem,
     required this.values,
     required this.onChange,
+    this.focusNode,
     Key? key,
   }) : super(key: key);
 
@@ -454,6 +484,7 @@ class ProblemOrderSelect extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<DropdownOrderItem>(
       focusColor: Colors.transparent,
+      focusNode: focusNode,
       decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

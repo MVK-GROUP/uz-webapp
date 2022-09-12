@@ -266,9 +266,9 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
     if (status == 1) {
       message = "history.cell_opened_and_dont_forget".tr();
     } else if (status == 2) {
-      message = "history.cell_didnt_open_and__use_pin".tr();
+      message = "cell_didnt_open".tr();
     } else if (status == 3) {
-      message = "history.cant_check_cell_opened__use_pin".tr();
+      message = "history.cant_check_cell_opened__report".tr();
     }
     if (message != null) {
       await showDialog(

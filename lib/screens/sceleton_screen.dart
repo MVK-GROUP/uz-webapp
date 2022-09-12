@@ -12,6 +12,7 @@ class SkeletonScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        elevation: 0.0,
         title: FittedBox(
           fit: BoxFit.fitWidth,
           child: Text(

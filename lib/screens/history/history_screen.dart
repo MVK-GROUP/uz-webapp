@@ -28,15 +28,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Future _obtainOrdersFuture() async {
     var data = Provider.of<OrdersNotifier>(context, listen: true);
-    if (data.isTimeToUpdate) {
-      await data.fetchAndSetOrders();
-    } else {
-      var isExistNewOrders = data.isExistOrdersWithStatus(
-          [OrderStatus.created, OrderStatus.inProgress]);
-      if (isExistNewOrders != null && isExistNewOrders) {
-        await data.fetchAndSetOrders();
-      }
-    }
+    await data.fetchAndSetOrders();
     return data;
   }
 
@@ -54,19 +46,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false,
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          iconTheme: const IconThemeData(size: 32),
+          iconTheme: const IconThemeData(
+            size: 32,
+            color: Colors.white,
+          ),
           title: FittedBox(
             fit: BoxFit.fitWidth,
             child: Text(
               'history.title'.tr(),
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.secondaryColor,
-              ),
             ),
           ),
           centerTitle: true,
@@ -79,7 +67,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               },
               icon: const Icon(
                 Icons.home,
-                color: AppColors.secondaryColor,
+                color: Colors.white,
               ),
             ),
             const SizedBox(width: 10)

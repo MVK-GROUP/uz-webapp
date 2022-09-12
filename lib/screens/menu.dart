@@ -32,7 +32,7 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   Locker? locker;
-  late Future _initOrdersFuture;
+  late Future<OrdersNotifier?> _initOrdersFuture;
   bool _isInit = false;
   bool _showFloatingButton = false;
 
@@ -50,10 +50,10 @@ class _MenuScreenState extends State<MenuScreen> {
     super.didChangeDependencies();
   }
 
-  Future<List<OrderData>?> _obtainInitOrdersFuture() async {
+  Future<OrdersNotifier?> _obtainInitOrdersFuture() async {
     locker = Provider.of<LockerNotifier>(context, listen: false).locker;
     if (locker == null) {
-      return [];
+      return null;
     } else {
       _showFloatingButton = true;
     }
@@ -70,7 +70,7 @@ class _MenuScreenState extends State<MenuScreen> {
         return Future.error(e.toString());
       }
     }
-    return ordersNotifier.getActiveAclsOrdersByLockerId(locker!.lockerId);
+    return ordersNotifier;
   }
 
   @override
@@ -155,6 +155,13 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: Text("home.unknown_error".tr()),
                     );
                   }
+
+                  final notifier = snapshot.data as OrdersNotifier?;
+
+                  final List<OrderData> activeOrders = notifier == null
+                      ? []
+                      : notifier
+                          .getActiveAclsOrdersByLockerId(locker!.lockerId);
                   return Column(
                     children: [
                       Padding(
@@ -185,8 +192,8 @@ class _MenuScreenState extends State<MenuScreen> {
                         MainBlock(
                           child: ListView(
                               shrinkWrap: true,
-                              children: menuItems(context, locker,
-                                  snapshot.data as List<OrderData>?)),
+                              children:
+                                  menuItems(context, locker, activeOrders)),
                         ),
                     ],
                   );

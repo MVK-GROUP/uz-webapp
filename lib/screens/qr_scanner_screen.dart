@@ -21,27 +21,26 @@ class QrScannerScreen extends StatelessWidget {
           controller: cameraController,
           onDetect: (barcode, args) {
             final String qrData = barcode.rawValue ?? '';
-            if (int.tryParse(qrData) != null) {
-              Navigator.of(context).pushReplacementNamed(MenuScreen.routeName);
-            } else {
-              if (Uri.tryParse(qrData) != null) {
-                Map? queryParameters;
-                var uriData = Uri.parse(qrData);
-                queryParameters = uriData.queryParameters;
-                if (queryParameters.containsKey("locker_id") &&
-                    int.tryParse(queryParameters["locker_id"]) != null) {
-                  final String lockerId = queryParameters["locker_id"];
-                  Navigator.of(context).pop(lockerId);
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("information".tr()),
-                      content: Text("set_locker.cannot_identify".tr()),
-                    ),
-                  ).then((value) => Navigator.of(context).pop());
-                }
+            print("QR DATA: $qrData");
+            if (Uri.tryParse(qrData) != null) {
+              Map? queryParameters;
+              var uriData = Uri.parse(qrData);
+              queryParameters = uriData.queryParameters;
+              if (queryParameters.containsKey("locker_id") &&
+                  int.tryParse(queryParameters["locker_id"]) != null) {
+                final String lockerId = queryParameters["locker_id"];
+                Navigator.of(context).pop(lockerId);
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text("information".tr()),
+                    content: Text("set_locker.cannot_identify".tr()),
+                  ),
+                ).then((value) => Navigator.of(context).pop());
               }
+            } else {
+              Navigator.of(context).pop();
             }
           },
         ),

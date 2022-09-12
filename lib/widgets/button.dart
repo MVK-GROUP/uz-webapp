@@ -117,13 +117,13 @@ class ElevatedDefaultButton extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 310),
       child: ElevatedButton(
         onPressed: onPressed,
-        child: child,
         style: ElevatedButton.styleFrom(
             primary: buttonColor,
             padding: padding,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(borderRadius),
             )),
+        child: child,
       ),
     );
   }
