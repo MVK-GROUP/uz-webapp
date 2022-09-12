@@ -74,8 +74,8 @@
         "you_still_have": "You still have {time} of the lease left. ",
         "you_can_use_pin": "You can also use a PIN code to open the cell ",
         "cell_opened_and_dont_forget": "@:cell_opened. Don't forget to close the cell after using it, thanks!",
-        "cell_didnt_open_and__use_pin": "@:cell_didnt_open. Use pin or qr code",
-        "cant_check_cell_opened__use_pin": "@:cant_check_cell_opened. Wait a few more seconds. If the cell does not open - use the pin code or report the problem to us.",
+        "cell_didnt_open_and__use_pin": "@:cell_didnt_open. Use a pincode",
+        "cant_check_cell_opened__report": "@:cant_check_cell_opened. Wait a few more seconds. if the cell did not open, please let us know",
         "order_complete_message": "Order completed. Thank you for using our service!",
         "order_timed_out_N_ago": "Order timed out {time} ago.",
         "you_need_to_pay_extra_N": "You need to pay extra {amount} to be able to collect your items",
@@ -180,7 +180,9 @@
         "telegram_id_is_not_valid": "The value \"telegram id\" is not a valid telegram id address.",
         "phone_is_not_valid": "Invalid phone number format",
         "message_sent": "Message sent, you will be contacted in a few minutes",
-        "message_not_sent": "Unfortunately, the message was not sent due to technical problems"
+        "message_not_sent": "Unfortunately, the message was not sent due to technical problems",
+        "contact_in_tg": "Text me in telegram",
+        "or_fill_in_form": "Or fill in the form"
     },
     "datetime": {
         "days_short": "{days} d. ",
