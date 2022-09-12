@@ -40,8 +40,7 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
           IconButton(
             iconSize: 36,
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, MenuScreen.routeName, (route) => false);
+              Navigator.pushNamed(context, MenuScreen.routeName);
             },
             icon: const Icon(Icons.home),
           ),
@@ -263,8 +262,7 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
       setState(() {
         isFetchingData = false;
       });
-      Navigator.pushNamedAndRemoveUntil(
-          context, MenuScreen.routeName, (route) => false);
+      Navigator.pushNamed(context, MenuScreen.routeName);
     } catch (onError) {
       String titleMessage = "something_went_wrong_with_dots".tr();
       String bodyMessage = "we_have_technical_problems".tr();

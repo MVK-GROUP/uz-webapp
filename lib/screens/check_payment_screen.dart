@@ -64,8 +64,7 @@ class _CheckPaymentScreenState extends State<CheckPaymentScreen> {
         } else {
           title = "create_order.wait_for_able_to_open_cell".tr();
         }
-        Navigator.pushNamedAndRemoveUntil(
-            context, SuccessOrderScreen.routeName, (route) => false,
+        Navigator.pushNamed(context, SuccessOrderScreen.routeName,
             arguments: {"order": orderData, "title": title});
         return 1;
       } catch (e) {

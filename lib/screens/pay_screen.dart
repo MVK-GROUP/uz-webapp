@@ -197,8 +197,7 @@ class _PayScreenState extends State<PayScreen> {
                       const SizedBox(height: 30),
                       TextButton(
                           onPressed: () {
-                            Navigator.pushNamedAndRemoveUntil(context,
-                                MenuScreen.routeName, (route) => false);
+                            Navigator.pushNamed(context, MenuScreen.routeName);
                           },
                           child: Text(
                               "create_order.cancel_payment_and_go_to_menu".tr(),

@@ -104,8 +104,7 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> {
               .confirmOtp(widget.phoneNumber, otpCode);
         }
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(
-            context, MenuScreen.routeName, (route) => false);
+        Navigator.pushNamed(context, MenuScreen.routeName);
       } catch (e) {
         otpController.text = '';
         showSnackbarMessage("auth.otp_invalid_code".tr(), icon: Icons.cancel);

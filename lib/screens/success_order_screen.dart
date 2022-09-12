@@ -94,8 +94,7 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
                     content: Text(
                         "create_order.cant_check_status__go_to_detail".tr()),
                   ));
-          Navigator.pushNamedAndRemoveUntil(
-              context, HistoryScreen.routeName, (route) => false);
+          Navigator.pushNamed(context, HistoryScreen.routeName);
           setState(() {
             _isOrderStatusChecking = false;
           });
@@ -119,8 +118,7 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
                 onPressed: _isOrderStatusChecking
                     ? null
                     : () {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, MenuScreen.routeName, (route) => false);
+                        Navigator.pushNamed(context, MenuScreen.routeName);
                       },
                 icon: const Icon(Icons.home),
               ),
@@ -221,8 +219,7 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
       _isCellOpening = false;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-        context, HistoryScreen.routeName, (route) => false);
+    Navigator.pushNamed(context, HistoryScreen.routeName);
   }
 
   Future<void> checkChangingOrder({attempts = 0, maxAttempts = 10}) async {

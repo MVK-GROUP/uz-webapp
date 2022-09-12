@@ -62,8 +62,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             IconButton(
               iconSize: 36,
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, MenuScreen.routeName, (route) => false);
+                Navigator.pushNamed(context, MenuScreen.routeName);
               },
               icon: const Icon(
                 Icons.home,
@@ -267,8 +266,7 @@ class NoOrdersWidget extends StatelessWidget {
         const SizedBox(height: 20),
         ElevatedDefaultButton(
             borderRadius: 12,
-            onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                context, MenuScreen.routeName, (route) => false),
+            onPressed: () => Navigator.pushNamed(context, MenuScreen.routeName),
             child: Text(
               'acl.service_acl_action'.tr(),
               style: const TextStyle(fontSize: 16),

@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../widgets/qt_overlay.dart';
-import 'menu.dart';
 
 class QrScannerScreen extends StatelessWidget {
   static const routeName = '/scanner';

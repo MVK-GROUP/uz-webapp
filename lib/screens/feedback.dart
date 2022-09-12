@@ -359,8 +359,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
 
     if (mounted) {
       widget.order != null
-          ? Navigator.pushNamedAndRemoveUntil(
-              context, MenuScreen.routeName, (route) => false)
+          ? Navigator.pushNamed(context, MenuScreen.routeName)
           : Navigator.pop(context);
     }
   }

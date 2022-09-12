@@ -148,8 +148,7 @@ class _OrderDetailContent extends StatelessWidget {
           ElevatedDefaultButton(
             borderRadius: 12,
             onPressed: () async {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, MenuScreen.routeName, (route) => false);
+              Navigator.pushNamed(context, MenuScreen.routeName);
             },
             child: Text(
               "history.manage_order".tr(),

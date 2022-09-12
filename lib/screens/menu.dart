@@ -64,8 +64,7 @@ class _MenuScreenState extends State<MenuScreen> {
         await ordersNotifier.fetchAndSetOrders();
       } catch (e) {
         if (e is HttpException && e.statusCode == 401) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, EnterPhoneScreen.routeName, (route) => false);
+          Navigator.pushNamed(context, EnterPhoneScreen.routeName);
         }
         return Future.error(e.toString());
       }
@@ -100,8 +99,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     text: "home.logout_confirm".tr()),
               ).then((value) {
                 if (value != null) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, WelcomeScreen.routeName, (route) => false);
+                  Navigator.pushNamed(context, WelcomeScreen.routeName);
                   Provider.of<Auth>(context, listen: false).logout();
                   Provider.of<OrdersNotifier>(context, listen: false)
                       .resetOrders();

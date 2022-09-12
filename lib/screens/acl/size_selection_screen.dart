@@ -54,8 +54,7 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
             title: "acl.no_free_cells".tr(),
             bodyMessage: "acl.no_free_cells_detail".tr(),
           ),
-        ).then((value) => Navigator.pushNamedAndRemoveUntil(
-            context, MenuScreen.routeName, (route) => false));
+        ).then((value) => Navigator.pushNamed(context, MenuScreen.routeName));
 
         return null;
       }
@@ -67,8 +66,7 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
           title: "acl.no_free_cells".tr(),
           bodyMessage: "acl.technical_error".tr(),
         ),
-      ).then((value) => Navigator.pushNamedAndRemoveUntil(
-          context, MenuScreen.routeName, (route) => false));
+      ).then((value) => Navigator.pushNamed(context, MenuScreen.routeName));
       return null;
     }
   }
@@ -232,12 +230,12 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
         OrderApi.createOrder(
                 lockerId ?? 0, "acl.service_acl".tr(), extraData, token,
                 isTempBook: true, lang: context.locale.languageCode)
-            .then((value) => Navigator.pushNamedAndRemoveUntil(
-                    context, PayScreen.routeName, (route) => false, arguments: {
-                  "order": value,
-                  "title": helperText,
-                  "item": item
-                }));
+            .then((value) => Navigator.pushNamed(context, PayScreen.routeName,
+                    arguments: {
+                      "order": value,
+                      "title": helperText,
+                      "item": item
+                    }));
       } catch (e) {
         await showDialog(
             context: context,
@@ -370,8 +368,7 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
                 lockerId ?? 0, "acl.service_acl".tr(),
                 data: extraData, lang: context.locale.languageCode);
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(
-            context, SuccessOrderScreen.routeName, (route) => false,
+        Navigator.pushNamed(context, SuccessOrderScreen.routeName,
             arguments: {"order": orderData, "title": helperText});
       } catch (e) {
         await showDialog(
