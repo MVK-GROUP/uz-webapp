@@ -47,33 +47,30 @@ class _EnterLockerIdScreenState extends State<EnterLockerIdScreen> {
           const SizedBox(width: 10)
         ],
       ),
-      body: SafeArea(
-        child: isFetchingData
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
-                child: Center(
-                  child: SingleChildScrollView(
-                    reverse: true,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Column(children: [
-                        _buildTitle('set_locker.enter_locker_id'.tr()),
-                        const SizedBox(height: 6),
-                        _buildLockerIdInputWidget(),
-                        _buildDivider(),
-                        _buildTitle('set_locker.scan_qr'.tr()),
-                        const SizedBox(height: 16),
-                        _buildQr(),
-                      ]),
-                    ),
+      body: isFetchingData
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+              child: Center(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Column(children: [
+                      _buildTitle('set_locker.enter_locker_id'.tr()),
+                      const SizedBox(height: 6),
+                      _buildLockerIdInputWidget(),
+                      _buildDivider(),
+                      _buildTitle('set_locker.scan_qr'.tr()),
+                      const SizedBox(height: 16),
+                      _buildQr(),
+                    ]),
                   ),
                 ),
               ),
-      ),
+            ),
     );
   }
 
