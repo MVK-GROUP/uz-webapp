@@ -95,8 +95,8 @@ class LockerApi {
       if (res.statusCode == 200) {
         var response =
             json.decode(utf8.decode(res.bodyBytes)) as Map<String, dynamic>;
-
         final data = response["data"] as List<dynamic>;
+
         List<CellStatus> cells = [];
         for (var element in data) {
           cells.add(CellStatus.fromJson(element));

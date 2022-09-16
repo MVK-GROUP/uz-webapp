@@ -131,8 +131,8 @@ class OrderData with ChangeNotifier {
       if (jsonData.containsKey("pin")) {
         data["pin"] = jsonData["pin"];
       }
-      if (jsonData.containsKey("cell_id")) {
-        data["cell_id"] = jsonData["cell_id"];
+      if (jsonData.containsKey("cell_number")) {
+        data["cell_number"] = jsonData["cell_number"];
       }
       if (jsonData.containsKey("paid")) {
         paid = jsonData["paid"];

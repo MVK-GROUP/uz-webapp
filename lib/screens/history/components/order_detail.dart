@@ -109,13 +109,13 @@ class OrderInfo extends StatelessWidget {
             textStyle: AppStyles.bodyText2,
           ),
         ),
-        if (order.data!.containsKey("cell_id"))
+        if (order.data!.containsKey("cell_number"))
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5.0),
             child: OrderElementWidget(
                 iconData: Icons.clear_all,
-                text: "cell_number"
-                    .tr(namedArgs: {"cell": order.data!["cell_id"].toString()}),
+                text: "cell_number".tr(
+                    namedArgs: {"cell": order.data!["cell_number"].toString()}),
                 iconSize: 26,
                 textStyle: AppStyles.bodyText2),
           ),

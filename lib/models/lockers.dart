@@ -347,13 +347,14 @@ class CellStatus {
   final String cellId;
   final String status;
   final String typeId;
-  final String service;
+  final String cellNumber;
 
-  const CellStatus(this.cellId, this.status, this.typeId, this.service);
+  const CellStatus(this.cellId, this.status, this.typeId, this.cellNumber);
 
   factory CellStatus.fromJson(Map<String, dynamic> json) {
-    return CellStatus(
-        json["cell"], json["status"], json["type"], json["service"]);
+    String cellNumber =
+        json.containsKey('number') ? json['number'] : json["id"];
+    return CellStatus(json["id"], json["status"], json["type"], cellNumber);
   }
 
   bool isThisTypeId(String otherTypeId) {

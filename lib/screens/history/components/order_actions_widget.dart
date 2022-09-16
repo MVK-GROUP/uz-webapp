@@ -71,14 +71,14 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
       {justOpen = false}) {
     String buttonText = "open_cell".tr();
     String confirmText = "acl.after_confirm_open_cell"
-            .tr(namedArgs: {"cell": order.data!["cell_id"].toString()}) +
+            .tr(namedArgs: {"cell": order.data!["cell_number"].toString()}) +
         "confirm_text".tr();
     var openCellType = OpenCellType.openCell;
     final algorithm = order.data!["algorithm"] as AlgorithmType;
     if (justOpen) {
       buttonText = "acl.open_cell_and_add_stuff".tr();
       confirmText = "acl.after_confirm_open_cell"
-              .tr(namedArgs: {"cell": order.data!["cell_id"].toString()}) +
+              .tr(namedArgs: {"cell": order.data!["cell_number"].toString()}) +
           "dont_forget_to_close".tr();
       openCellType = OpenCellType.openCell;
     } else if (order.status == OrderStatus.hold &&
@@ -87,15 +87,15 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
       openCellType = OpenCellType.firstOpenCell;
       buttonText = "acl.open_cell_and_put_stuff".tr();
       confirmText = "acl.after_confirm_open_cell"
-              .tr(namedArgs: {"cell": order.data!["cell_id"].toString()}) +
+              .tr(namedArgs: {"cell": order.data!["cell_number"].toString()}) +
           "dont_forget_to_close".tr();
     } else if (order.status == OrderStatus.active &&
         algorithm == AlgorithmType.selfService) {
       openCellType = OpenCellType.lastOpenCell;
       buttonText = "acl.pick_up_stuff_and_complete".tr();
       confirmText = order.timeLeftInSeconds < 300
-          ? "acl.after_confirm_open_cell"
-                  .tr(namedArgs: {"cell": order.data!["cell_id"].toString()}) +
+          ? "acl.after_confirm_open_cell".tr(
+                  namedArgs: {"cell": order.data!["cell_number"].toString()}) +
               "confirm_text".tr()
           : "history.you_still_have"
                   .tr(namedArgs: {'time': order.humanTimeLeft}) +
@@ -137,7 +137,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
       BuildContext context, OrderData order) {
     String buttonText = "acl.open_cell_and_add_stuff".tr();
     String confirmText = "acl.after_confirm_open_cell_and_dont_forget_to_close"
-        .tr(namedArgs: {'cell': order.data!["cell_id"].toString()});
+        .tr(namedArgs: {'cell': order.data!["cell_number"].toString()});
     var openCellType = OpenCellType.openCell;
 
     return ElevatedDefaultButton(
@@ -217,7 +217,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
                         text:
                             "acl.after_confirm_open_cell_and_dont_forget_to_close"
                                 .tr(namedArgs: {
-                          'cell': order.data!["cell_id"].toString()
+                          'cell': order.data!["cell_number"].toString()
                         }));
                   });
               if (confirmDialog != null) {

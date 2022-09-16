@@ -176,7 +176,8 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
       builder: (ctx) => TariffDialog(cellType),
     );
     if (chosenTariff != null) {
-      String? orderedCell;
+      String? orderedCellId;
+      String? orderedCellNumber;
       try {
         final res = await LockerApi.getFreeCells(lockerId ?? 0,
             service: serviceCategoryType, typeId: cellType.id, token: token);
@@ -189,7 +190,8 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
                   ));
           return;
         } else {
-          orderedCell = res.first.cellId;
+          orderedCellId = res.first.cellId;
+          orderedCellNumber = res.first.cellNumber;
         }
       } catch (e) {
         if (e is HttpException) {
@@ -208,7 +210,7 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
       }
 
       var helperText = "create_order.order_created_with_cell_N__pay"
-          .tr(namedArgs: {"cell": orderedCell});
+          .tr(namedArgs: {"cell": orderedCellNumber});
 
       Map<String, Object> extraData = {};
       extraData["type"] = "paid";
@@ -217,7 +219,8 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
       extraData["hourly_pay"] = chosenTariff.priceInCoins;
       extraData["service"] = serviceCategoryType;
       extraData["algorithm"] = AlgorithmTypeExt.toStr(algorithmType);
-      extraData["cell_id"] = orderedCell;
+      extraData["cell_id"] = orderedCellId;
+      extraData["cell_number"] = orderedCellNumber;
       if (cellType.overduePayment != null) {
         extraData["overdue_payment"] = {
           "time": cellType.overduePayment!.seconds,
@@ -303,7 +306,8 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
         });
 
     if (confirmDialog != null) {
-      String? orderedCell;
+      String? orderedCellId;
+      String? orderedCellNumber;
       try {
         final res = await LockerApi.getFreeCells(lockerId ?? 0,
             service: serviceCategoryType, typeId: cellType.id, token: token);
@@ -316,7 +320,8 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
                   ));
           return;
         } else {
-          orderedCell = res.first.cellId;
+          orderedCellId = res.first.cellId;
+          orderedCellNumber = res.first.cellNumber;
         }
       } catch (e) {
         if (e is HttpException) {
@@ -336,7 +341,7 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
       }
 
       var helperText = "create_order.order_created_with_cell_N"
-          .tr(namedArgs: {"cell": orderedCell.padLeft(2, '0')});
+          .tr(namedArgs: {"cell": orderedCellNumber.padLeft(2, '0')});
       if (algorithmType == AlgorithmType.qrReading) {
         helperText += ' ${"create_order.contain_qr_code_info".tr()}';
       } else if (algorithmType == AlgorithmType.enterPinOnComplex) {
@@ -353,7 +358,8 @@ class _SizeSelectionScreenState extends State<SizeSelectionScreen> {
       extraData["service"] =
           ServiceCategoryExt.typeToString(ServiceCategory.acl);
       extraData["algorithm"] = AlgorithmTypeExt.toStr(algorithmType);
-      extraData["cell_id"] = orderedCell;
+      extraData["cell_id"] = orderedCellId;
+      extraData["cell_number"] = orderedCellNumber;
       if (cellType.overduePayment != null) {
         extraData["overdue_payment"] = {
           "time": cellType.overduePayment!.seconds,
