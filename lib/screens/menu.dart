@@ -75,13 +75,6 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //floatingActionButton: _showFloatingButton
-      //    ? FloatingActionButton(
-      //        onPressed: () =>
-      //            Navigator.pushNamed(context, FeedbackScreen.routeName),
-      //        child: const Icon(Icons.question_mark),
-      //      )
-      //    : null,
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,

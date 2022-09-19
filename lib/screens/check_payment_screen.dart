@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uz_app/screens/menu.dart';
 
 import '../api/orders.dart';
 import '../models/lockers.dart';
@@ -58,14 +59,22 @@ class _CheckPaymentScreenState extends State<CheckPaymentScreen> {
     if (widget.type == PaymentType.successPayment) {
       try {
         orderData = await OrderApi.checkPaymentByOrderId(widget.orderId, token);
-        String? title;
-        if (orderData.status == OrderStatus.hold) {
-          title = "create_order.you_can_open_cell".tr();
+
+        if (orderData.status == OrderStatus.active) {
+          Provider.of<LockerNotifier>(context, listen: false).setLocker(null);
+          Navigator.pushNamedAndRemoveUntil(
+              context, MenuScreen.routeName, (route) => false);
         } else {
-          title = "create_order.wait_for_able_to_open_cell".tr();
+          String? title;
+          if (orderData.status == OrderStatus.hold) {
+            title = "create_order.you_can_open_cell".tr();
+          } else {
+            title = "create_order.wait_for_able_to_open_cell".tr();
+          }
+          Navigator.pushNamed(context, SuccessOrderScreen.routeName,
+              arguments: {"order": orderData, "title": title});
         }
-        Navigator.pushNamed(context, SuccessOrderScreen.routeName,
-            arguments: {"order": orderData, "title": title});
+
         return 1;
       } catch (e) {
         Navigator.pushAndRemoveUntil(
