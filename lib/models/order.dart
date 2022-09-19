@@ -254,14 +254,10 @@ class OrderData with ChangeNotifier {
     final endDate = data!["end_date"] as DateTime;
     final diff = DateTime.now().difference(endDate).inSeconds;
     try {
-      print("need to pay extra");
       final overdueTariff = data!['overdue_payment'] as Map<String, dynamic>;
-      print("overdueTariff get");
       var res = (diff / overdueTariff['time']).ceil() * overdueTariff['price'];
-      print("res: $res");
       return "${(res / 100).toStringAsFixed(2)} $currency";
     } catch (e) {
-      print("catch e: ${e.toString()}");
       return "--- $currency";
     }
   }
