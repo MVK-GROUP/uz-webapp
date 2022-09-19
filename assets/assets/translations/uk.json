@@ -75,7 +75,7 @@
         "you_can_use_pin": "Для відкриття комірки також можна використати PIN код ",
         "cell_opened_and_dont_forget": "@:cell_opened.  Не забудьте зачинити комірку після її використання, дякуємо!",
         "cell_didnt_open_and__use_pin": "@:cell_didnt_open. Скористайтесь пін або qr-кодом",
-        "cant_check_cell_opened__report": "@:cant_check_cell_opened. Почекайте ще декілька секунд. Якщо комірка не відчиниться - скористайтесь пін-кодом, або повідомте нам про проблему",
+        "cant_check_cell_opened__report": "@:cant_check_cell_opened. Почекайте ще декілька секунд. Якщо комірка не відчиниться - повідомте нам про проблему",
         "order_complete_message": "Замовлення виконано. Дякуємо що скористались нашим сервісом!",
         "order_timed_out_N_ago": "Час замовлення минув {time} назад. ",
         "you_need_to_pay_extra_N": "Вам потрібно доплатити {amount} аби мати змогу забрати свої речі",
