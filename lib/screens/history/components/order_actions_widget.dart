@@ -102,7 +102,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
               "acl.pick_up_stuff_q".tr();
     }
     return ElevatedDefaultButton(
-      buttonColor: AppColors.mainColor,
+      buttonColor: AppColors.secondaryColor,
       onPressed: isJustCellOpening || isCellOpening
           ? null
           : () async {
@@ -141,7 +141,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
     var openCellType = OpenCellType.openCell;
 
     return ElevatedDefaultButton(
-      buttonColor: AppColors.mainColor,
+      buttonColor: AppColors.secondaryColor,
       onPressed: isJustCellOpening || isCellOpening
           ? null
           : () async {
@@ -196,7 +196,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
           js.context.callMethod(
               'openLiqpay', [res['data'], res['signature'], kDebugMode]);
         } catch (e) {
-          print("order_actions_widget error: ${e}");
+          print("order_actions_widget error: $e");
           return;
         }
       },
@@ -205,7 +205,7 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
 
   ElevatedDefaultButton putThingsButton(BuildContext context) {
     return ElevatedDefaultButton(
-      buttonColor: AppColors.mainColor,
+      buttonColor: AppColors.secondaryColor,
       onPressed: isJustCellOpening || isCellOpening
           ? null
           : () async {
