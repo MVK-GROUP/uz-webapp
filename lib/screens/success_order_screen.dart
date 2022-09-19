@@ -50,10 +50,6 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
       final arg = ModalRoute.of(context)?.settings.arguments;
       token = Provider.of<Auth>(context).token;
       locker = Provider.of<LockerNotifier>(context).locker;
-      if (arg == null || locker == null) {
-        Navigator.pushReplacementNamed(context, MenuScreen.routeName);
-        return;
-      }
 
       final existArgs = arg as Map<String, Object>;
       order = existArgs["order"] as OrderData;
@@ -218,8 +214,8 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen> {
     setState(() {
       _isCellOpening = false;
     });
-
-    Navigator.pushNamed(context, HistoryScreen.routeName);
+    Navigator.pushNamedAndRemoveUntil(context, HistoryScreen.routeName,
+        ModalRoute.withName(MenuScreen.routeName));
   }
 
   Future<void> checkChangingOrder({attempts = 0, maxAttempts = 10}) async {

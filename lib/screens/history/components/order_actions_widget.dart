@@ -439,11 +439,11 @@ class _OrderActionsWidgetState extends State<OrderActionsWidget> {
         Padding(
           padding: const EdgeInsets.only(top: 20, bottom: 10),
           child: Text(
-            "history.order_timed_out_N_ago"
-                    .tr(namedArgs: {"time": order.humanTimePassed}) +
-                " " +
-                "history.you_need_to_pay_extra_N"
-                    .tr(namedArgs: {"amount": order.needToPayExtra}),
+            "${"history.order_timed_out_N_ago".tr(namedArgs: {
+                  "time": order.humanTimePassed
+                })} ${"history.you_need_to_pay_extra_N".tr(namedArgs: {
+                  "amount": order.needToPayExtra
+                })}",
             textAlign: TextAlign.center,
             style: AppStyles.bodySmallText,
           ),
